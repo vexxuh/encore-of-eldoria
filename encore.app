@@ -1,3 +1,3 @@
 {
-	"id": "cosmic-encore-c63i"
+	"id": "encore-of-eldoria-c63i"
 }
