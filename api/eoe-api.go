@@ -6,6 +6,7 @@ import (
 
 	orch "encore.app/orchestration"
 	"encore.dev/storage/sqldb"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -21,6 +22,13 @@ var blogDB = sqldb.NewDatabase("game_db", sqldb.DatabaseConfig{
 
 // initService initializes the site service(s).
 func initService() (*Service, error) {
+
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		return nil, err
+	}
+
+	// load database service
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		Conn: blogDB.Stdlib(),
 	}))

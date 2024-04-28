@@ -8,6 +8,7 @@ require (
 	ariga.io/atlas-go-sdk v0.2.3
 	ariga.io/atlas-provider-gorm v0.3.4
 	encore.dev v1.34.3
+	github.com/joho/godotenv v1.5.1
 	gorm.io/driver/postgres v1.5.7
 	gorm.io/gorm v1.25.10
 )
