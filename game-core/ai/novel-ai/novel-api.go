@@ -7,14 +7,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 )
 
 type novelResponseBody struct {
 	Output string `json:"output"`
 }
 
-func GenerateAiText(input string) (string, error) {
+func GenerateAiText(apiKey, input string) (string, error) {
 	client := http.DefaultClient
 
 	requestBody := buildTextAiRequest(input)
@@ -25,7 +24,7 @@ func GenerateAiText(input string) (string, error) {
 	}
 
 	// Set any headers if required
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("NOVEL_AI_KEY"))
+	req.Header.Set("Authorization", "Bearer "+apiKey)
 	req.Header.Set("accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 
