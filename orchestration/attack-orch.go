@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Attack(db *gorm.DB, attack_type string) (string, error) {
+func Attack(db *gorm.DB, novelApiKey string, attack_type string) (string, error) {
 	if attack_type == "" {
 		return "", errors.New("Not a valid attack type")
 	}
@@ -17,7 +17,7 @@ func Attack(db *gorm.DB, attack_type string) (string, error) {
 	// do game logic action
 
 	// do AI action
-	aiData, err := novel_ai.GenerateAiText("He started to attack me with a " + attack_type)
+	aiData, err := novel_ai.GenerateAiText(novelApiKey, "He started to attack me with a "+attack_type)
 	if err != nil {
 		return "", err
 	}
