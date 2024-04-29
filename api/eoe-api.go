@@ -20,6 +20,10 @@ type ApiConfig struct {
 	NovelApiKey string
 }
 
+var secrets struct {
+	NovelApiKey string
+}
+
 var cfg *ApiConfig = config.Load[*ApiConfig]()
 
 var blogDB = sqldb.NewDatabase("game_db", sqldb.DatabaseConfig{
@@ -42,7 +46,7 @@ func initService() (*Service, error) {
 //
 // encore:api public
 func (s *Service) Attack(ctx context.Context, params *AttackParam) (*AttackResponse, error) {
-	msg, err := orch.Attack(s.db, cfg.NovelApiKey, params.Type)
+	msg, err := orch.Attack(s.db, secrets.NovelApiKey, params.Type)
 	if err != nil {
 		return &AttackResponse{Message: fmt.Sprintf("Hmm seem like %s is not a valid attack... please try this again "+err.Error(), params.Type)}, nil
 	}
