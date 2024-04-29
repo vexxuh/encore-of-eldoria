@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	discordbotgen.RunBot("")
-
+	token := ""
+	discordbotgen.RunBot(token)
 }
