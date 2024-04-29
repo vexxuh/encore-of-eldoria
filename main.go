@@ -7,4 +7,5 @@ import (
 func main() {
 	token := ""
 	discordbotgen.RunBot(token)
+
 }
