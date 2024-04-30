@@ -1,10 +1,15 @@
 package gamecore
 import("fmt")
+import("strconv")
 
-func main(){
-	fmt.Println("gamecore init")
-
+/*
+func main() {
+	user := "Ham"
+	message := create_player(user)
+	fmt.Println(message)
 }
+
+*/
 
 // functions
 	// command parser
@@ -12,7 +17,7 @@ func main(){
 		//check if open session
 
 
-func create_player(user fstring){
+func create_player(user string) string {
 	//player creation
 	message:= "Create player: UserID passed in: " + user
 
@@ -20,7 +25,7 @@ func create_player(user fstring){
 
 }
 
-func get_status(user fstring){
+func get_status(user string) string {
 	// player details
 
 	/*
@@ -37,7 +42,7 @@ func get_status(user fstring){
 
 }
 
-func move_area(user fstring, area fstring){
+func move_area(user string, area string) string {
 	// navigation
 
 	/*
@@ -51,7 +56,7 @@ func move_area(user fstring, area fstring){
 
 }
 
-func store(user fstring, action fstring, count int){
+func store(user string, action string, count int) string {
 	// store
 
 	/*
@@ -61,12 +66,12 @@ func store(user fstring, action fstring, count int){
 		- complete the transaction and notify the player
 	*/
 
-	message:= "Store menu: Action: " + action + "count: " + count
+	message:= "Store menu: Action: " + action + "count: " + strconv.Itoa(count)
 
 	return message		
 }
 
-func item(user fstring, action fstring, count int){
+func item(user string, action string, count int) string {
 	/*
 		- check if the player is in a valid state
 		- determine if the request is valid
@@ -78,7 +83,7 @@ func item(user fstring, action fstring, count int){
 	return message
 }
 
-func combat(user fstrung, action fstring, target int){
+func combat(user string, action string, target int) string {
 	// fight
 
 	/*
@@ -89,14 +94,14 @@ func combat(user fstrung, action fstring, target int){
 		- update the player with the turn results
 		- complete combat and award experience
 	*/
-	message:= "Player is in combat: Player: " + user + " Attack Action: " + action + " Target: " + target
+	message:= "Player is in combat: Player: " + user + " Attack Action: " + action + " Target: " + strconv.Itoa(target)
 
 	return message
 
 }
 
 
-func in_team(user fstring){
+func in_team(user string) string {
 	// is the user in a team currently?
 
 		message:= "Team check: " + "user checked: " + user
@@ -105,7 +110,7 @@ func in_team(user fstring){
 }
 
 
-func get_state(user fstring){
+func get_state(user string) string {
 	//Is the user in town?  Is the user in combat?
 
 	message:= "Check use state: " + user
