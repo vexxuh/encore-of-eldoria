@@ -2,9 +2,7 @@ package gamecore
 import("fmt")
 
 func main(){
-	fmt.Println("Yo!")
-
-
+	fmt.Println("gamecore init")
 
 }
 
@@ -13,36 +11,12 @@ func main(){
 		// playerID, command, arguments
 		//check if open session
 
-func check_session(user fstring){
-
-}
-
-func parse_command(cmd fstring){
-	//parse command
-	switch cmd {
-	case "attack", "fight":
-		combat()
-	case "store", "shop", "vendor":
-		store()
-//	case "move":
-//		store()
-//	case "status":
-//		store()
-//	case "item":
-//		store()
-//	case "store":
-//		store()
-//	case "store":
-//		store()
-//	case "store":
-//		store()
-	default:
-		fmt.Println("this is not a valid command!")
-	}
-}
 
 func create_player(user fstring){
 	//player creation
+	message:= "Create player: UserID passed in: " + user
+
+	return message
 
 }
 
@@ -57,6 +31,10 @@ func get_status(user fstring){
 		decide the format for this state tracking 
 	*/
 
+	message:= "Get status: " + user
+
+	return message
+
 }
 
 func move_area(user fstring, area fstring){
@@ -67,6 +45,10 @@ func move_area(user fstring, area fstring){
 		- move to the selected area
 		- provide flavor text for the area
 	*/
+	message:= "Move area: " + user + " to " + area
+
+	return message
+
 }
 
 func store(user fstring, action fstring, count int){
@@ -77,7 +59,23 @@ func store(user fstring, action fstring, count int){
 		- determine if the request is valid
 		- update inventory
 		- complete the transaction and notify the player
-	*/		
+	*/
+
+	message:= "Store menu: Action: " + action + "count: " + count
+
+	return message		
+}
+
+func item(user fstring, action fstring, count int){
+	/*
+		- check if the player is in a valid state
+		- determine if the request is valid
+		- update inventory
+		- complete the transaction and notify the player
+	*/
+	message:= "Used item: " + action 
+
+	return message
 }
 
 func combat(user fstrung, action fstring, target int){
@@ -91,16 +89,28 @@ func combat(user fstrung, action fstring, target int){
 		- update the player with the turn results
 		- complete combat and award experience
 	*/
+	message:= "Player is in combat: Player: " + user + " Attack Action: " + action + " Target: " + target
+
+	return message
+
 }
 
 
 func in_team(user fstring){
 	// is the user in a team currently?
+
+		message:= "Team check: " + "user checked: " + user
+
+	return message
 }
 
 
 func get_state(user fstring){
 	//Is the user in town?  Is the user in combat?
+
+	message:= "Check use state: " + user
+
+	return message
 }
 
 	// creature list
