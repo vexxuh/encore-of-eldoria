@@ -14,15 +14,15 @@ func main() {
 	fmt.Println("\n" + message)
 
 	/*
-	checkstate(user string)
-	create_player(user string)
-	get_status(user string, command string)
-	move_area(user string, command string)
-	store(user string, command string)
-	item(user string, action string, count int)
-	combat(user string, action string, target int)
-	in_team(user string)
-	get_state(user string)
+	checkstate(user string) ( bool )
+	create_player(user string) ( string, string )
+	get_status(user string, command string)  ( string, string )
+	move_area(user string, command string) ( string, string )
+	store(user string, command string) ( string, string )
+	item(user string, command string) ( string, string )
+	combat(user string, command string) ( string, string )
+	in_team(user string) ( string )
+	get_state(user string, command string) ( string, string )
 	*/
 }
 
