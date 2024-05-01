@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	orch "encore.app/orchestration"
+	orch "encore.app/eldoria/orchestration"
 	"encore.dev/config"
 	"encore.dev/storage/sqldb"
 	"gorm.io/driver/postgres"
