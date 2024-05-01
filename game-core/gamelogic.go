@@ -8,7 +8,58 @@ import(
 
 
 func main() {
-	user := "Ham"
+	username := "Yaac-ity_snorsh"	//Discord username | uid
+	user := "Ham"					//Player character name
+	c_level := 1					//Character level
+	c_health := 100					//Current Health
+	m_health := 100					//Max Health
+	b_health := 0					//Bonus Health
+	s_strength := 10				//Strength Stat	
+	s_agility := 10					//Agility Stat
+	s_constitution := 10			//Constitution Stat
+	s_intelligence := 10			//Intelligence Stat
+	s_wisdom := 10					//Wisdom Stat
+	w_s_sword := 10					//Sword type skill
+	w_s_axe := 0					//Axe type skill
+	w_s_spear := 0					//Spear type skill
+	c_gold := 0						//gold in inventory
+	b_gold := 0						//gold in bank
+	i_apple	:= 1					//apples in inventory
+	i_potion := 0					//potions in inventory
+	i_potionPlus := 0				//Plus Potions in inventory
+	p_state := "normal"				//player state
+	c_area := "town"				//current location
+
+	type inventory struct {
+		i_apple			int
+		i_potion		int
+		i_potionPlus	int
+		c_gold			int
+		b_gold			int
+	}
+
+	type character struct {
+
+		inventory 			inventory
+		username			string
+		user				string
+		c_level				int
+		c_health			int
+		m_health			int
+		b_health			int
+		s_strength			int	
+		s_agility			int
+		s_constitution		int
+		s_intelligence		int
+		s_wisdom			int
+		w_s_sword			int
+		w_s_axe				int
+		w_s_spear			int
+		p_state				string
+		c_area				string	
+	}
+
+
 	command := "shop buy potion 10"
 	message := store(user, command)
 	fmt.Println("\n" + message)
