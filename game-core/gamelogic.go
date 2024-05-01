@@ -136,6 +136,8 @@ func move_area(user string, command string) string {
 	}
 
 	message:= "Move area: " + user + " to " + area
+	fmt.Printf("Fields are: %q", args)
+
 	return message
 }
 
@@ -182,6 +184,7 @@ func store(user string, command string) string {
 	}
 
 	message:= "Store menu: Action: " + verb + "item:" + item + "count: " + args[3]
+	fmt.Printf("Fields are: %q", args)
 
 	return message
 }
@@ -193,12 +196,13 @@ func item(user string, action string, count int) string {
 		- update inventory
 		- complete the transaction and notify the player
 	*/
-	message:= "Used item: " + action 
+	message:= "Used item: " + action
+	fmt.Printf("Fields are: %q", args)
 
 	return message
 }
 
-func combat(user string, action string, target int) string {
+func combat(user string, command string) string {
 	// fight
 
 	/*
@@ -209,7 +213,11 @@ func combat(user string, action string, target int) string {
 		- update the player with the turn results
 		- complete combat and award experience
 	*/
-	message:= "Player is in combat: Player: " + user + " Attack Action: " + action + " Target: " + strconv.Itoa(target)
+
+	args := strings.Fields(command)
+
+	message:= "Player is in combat:"
+	fmt.Printf("Fields are: %q", args)
 
 	return message
 
@@ -225,10 +233,12 @@ func in_team(user string) string {
 }
 
 
-func get_state(user string) string {
+func get_state(user string, command string) string {
 	//Is the user in town?  Is the user in combat?
 
 	message:= "Check use state: " + user
+	args := strings.Fields(command)
+	fmt.Printf("Fields are: %q", args)
 
 	return message
 }
