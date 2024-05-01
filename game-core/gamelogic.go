@@ -43,15 +43,16 @@ func checkstate(user string) bool {
 	}
 }
 
-func create_player(user string) string {
+func create_player(user string) (string, string) {
 	//player creation
-	message:= "Create player: UserID passed in: " + user
+	message := "Create player: UserID passed in: " + user
+	prompt := "You awaken on a cushion of wildflowers in a small clearing near the edge of some woods.  In the distance you can see a small village.  You stand up, brush yourself off, and head into the village."
 
 	return message
 
 }
 
-func get_status(user string, command string) string {
+func get_status(user string, command string) ( string, string ) {
 	// player details
 
 	/*
@@ -84,14 +85,16 @@ func get_status(user string, command string) string {
 	}
 	
 	message:= "Get status: " + user
+	prompt := "You check your backpack and see what items you have."
+
 	
 	fmt.Printf("Fields are: %q", args)
 
-	return message
+	return message, prompt
 }
 
 
-func move_area(user string, command string) string {
+func move_area(user string, command string) ( string, string) {
 	// navigation
 	/*
 		- check if the player can move (stuck in combat? middle of player creation or exchange?)
@@ -138,11 +141,12 @@ func move_area(user string, command string) string {
 	message:= "Move area: " + user + " to " + area
 	fmt.Printf("Fields are: %q", args)
 
-	return message
+	prompt := "You collect your belongings, and set off for the " + area
+	return message, prompt
 }
 
 
-func store(user string, command string) string {
+func store(user string, command string) ( string, string ) {
 	// store
 
 	/*
@@ -160,17 +164,17 @@ func store(user string, command string) string {
 	args := strings.Fields(command)
 	if len(args) < 3 {
 		fmt.Println("not enough arguments")
-		return "invalid"
+		return "invalid", "invalid"
 	}
 	
-	verb := args[1]
-	item := args[2]
-	count := "3"
-	amount, e1 := strconv.Atoi(count);
-
-	if e1 != nil {
-		amount := 1	
-	}
+//	verb := args[1]
+//	item := args[2]
+//	count := "3"
+//	amount, e1 := strconv.Atoi(count);
+//
+//	if e1 != nil {
+//		amount := 1	
+//	}
 
 	switch verb := args[1]; verb {
 		case "buy":
@@ -183,26 +187,36 @@ func store(user string, command string) string {
 			fmt.Println("The shopkeeper looks at you confused")
 	}
 
+	prompt := "You ask the shopkeeper about buying a" + args[2]
 	message:= "Store menu: Action: " + verb + "item:" + item + "count: " + args[3]
+
 	fmt.Printf("Fields are: %q", args)
 
-	return message
+	return message, prompt
 }
 
-func item(user string, action string, count int) string {
+func item(user string, command string) ( string, string ) {
 	/*
 		- check if the player is in a valid state
 		- determine if the request is valid
 		- update inventory
 		- complete the transaction and notify the player
 	*/
+	args := strings.Fields(command)
+	args := strings.Fields(command)
+	if len(args) < 2 {
+		fmt.Println("not enough arguments")
+		return "invalid", "invalid"
+	}
+	prompt := "You use a " + args[2]
 	message:= "Used item: " + action
+
 	fmt.Printf("Fields are: %q", args)
 
-	return message
+	return message, prompt
 }
 
-func combat(user string, command string) string {
+func combat(user string, command string) (string, string) {
 	// fight
 
 	/*
@@ -215,15 +229,19 @@ func combat(user string, command string) string {
 	*/
 
 	args := strings.Fields(command)
+	if len(args) < 2 {
+		fmt.Println("not enough arguments")
+		return "invalid", "invalid"
 
 	message:= "Player is in combat:"
+	prompt := "You attack the monster"
 	fmt.Printf("Fields are: %q", args)
 
 	return message
 
 }
 
-
+// internal function to determine if teamwork should be used in combat
 func in_team(user string) string {
 	// is the user in a team currently?
 
@@ -233,14 +251,20 @@ func in_team(user string) string {
 }
 
 
-func get_state(user string, command string) string {
+func get_state(user string, command string) ( string, string ) {
 	//Is the user in town?  Is the user in combat?
 
-	message:= "Check use state: " + user
 	args := strings.Fields(command)
 	fmt.Printf("Fields are: %q", args)
+	if len(args) < 1 {
+		fmt.Println("not enough arguments")
+		return "invalid"
+	}
 
-	return message
+	message:= "Check use state: " + user
+	prompt := "You look down at yourself and assess the damage."
+
+	return message, prompt
 }
 
 	// creature list
