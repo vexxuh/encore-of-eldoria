@@ -7,7 +7,7 @@ import (
 
 	_ "ariga.io/atlas-go-sdk/recordriver"
 	"ariga.io/atlas-provider-gorm/gormschema"
-	"encore.app/game-core/data/models"
+	"encore.app/eldoria/game-core/data/models"
 )
 
 // Define the models to generate migrations for.

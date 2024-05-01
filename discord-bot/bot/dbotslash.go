@@ -1,4 +1,4 @@
-package discordbotgen
+package discordbot
 
 import (
 	"flag"

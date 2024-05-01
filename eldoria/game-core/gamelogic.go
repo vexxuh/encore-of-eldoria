@@ -1,6 +1,8 @@
 package gamecore
-import("fmt")
-import("strconv")
+
+import (
+	"strconv"
+)
 
 /*
 func main() {
@@ -12,14 +14,13 @@ func main() {
 */
 
 // functions
-	// command parser
-		// playerID, command, arguments
-		//check if open session
-
+// command parser
+// playerID, command, arguments
+//check if open session
 
 func create_player(user string) string {
 	//player creation
-	message:= "Create player: UserID passed in: " + user
+	message := "Create player: UserID passed in: " + user
 
 	return message
 
@@ -32,11 +33,11 @@ func get_status(user string) string {
 		lookup the player and get their user state. return the action they are currently in the middle of.
 		0 = does not exist
 		1 = player creation started
-	
-		decide the format for this state tracking 
+
+		decide the format for this state tracking
 	*/
 
-	message:= "Get status: " + user
+	message := "Get status: " + user
 
 	return message
 
@@ -50,7 +51,7 @@ func move_area(user string, area string) string {
 		- move to the selected area
 		- provide flavor text for the area
 	*/
-	message:= "Move area: " + user + " to " + area
+	message := "Move area: " + user + " to " + area
 
 	return message
 
@@ -66,9 +67,9 @@ func store(user string, action string, count int) string {
 		- complete the transaction and notify the player
 	*/
 
-	message:= "Store menu: Action: " + action + "count: " + strconv.Itoa(count)
+	message := "Store menu: Action: " + action + "count: " + strconv.Itoa(count)
 
-	return message		
+	return message
 }
 
 func item(user string, action string, count int) string {
@@ -78,7 +79,7 @@ func item(user string, action string, count int) string {
 		- update inventory
 		- complete the transaction and notify the player
 	*/
-	message:= "Used item: " + action 
+	message := "Used item: " + action
 
 	return message
 }
@@ -94,31 +95,29 @@ func combat(user string, action string, target int) string {
 		- update the player with the turn results
 		- complete combat and award experience
 	*/
-	message:= "Player is in combat: Player: " + user + " Attack Action: " + action + " Target: " + strconv.Itoa(target)
+	message := "Player is in combat: Player: " + user + " Attack Action: " + action + " Target: " + strconv.Itoa(target)
 
 	return message
 
 }
-
 
 func in_team(user string) string {
 	// is the user in a team currently?
 
-		message:= "Team check: " + "user checked: " + user
+	message := "Team check: " + "user checked: " + user
 
 	return message
 }
-
 
 func get_state(user string) string {
 	//Is the user in town?  Is the user in combat?
 
-	message:= "Check use state: " + user
+	message := "Check use state: " + user
 
 	return message
 }
 
-	// creature list
+// creature list
 
 /*
 	Field
@@ -126,7 +125,7 @@ func get_state(user string) string {
 			bite
 			scratch
 			infection
-	
+
 		Feral Hound
 			bite
 			scratch
@@ -155,4 +154,3 @@ func get_state(user string) string {
 
 
 */
-

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	novel_ai "encore.app/game-core/ai/novel-ai"
-	"encore.app/game-core/data/models"
+	novel_ai "encore.app/eldoria/game-core/ai/novel-ai"
+	"encore.app/eldoria/game-core/data/models"
 	"gorm.io/gorm"
 )
 
