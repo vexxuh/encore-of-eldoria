@@ -29,6 +29,8 @@ func main() {
 	i_potionPlus := 0				//Plus Potions in inventory
 	p_state := "normal"				//player state
 	c_area := "town"				//current location
+	c_e_weapon := 0					//Equipped weapon index
+	c_e_armor := 0					//Equipped Armor
 
 	type inventory struct {
 		i_apple			int
@@ -59,21 +61,23 @@ func main() {
 		c_area				string	
 	}
 
+	
+
 
 	command := "shop buy potion 10"
 	message := store(user, command)
 	fmt.Println("\n" + message)
 
 	/*
-	checkstate(user string) ( bool )
-	create_player(user string) ( string, string )
-	get_status(user string, command string)  ( string, string )
-	move_area(user string, command string) ( string, string )
-	store(user string, command string) ( string, string )
-	item(user string, command string) ( string, string )
-	combat(user string, command string) ( string, string )
-	in_team(user string) ( string )
-	get_state(user string, command string) ( string, string )
+	checkstate(username string) ( bool )
+	create_player(username string) ( string, string )
+	get_status(username string, command string)  ( string, string )
+	move_area(username string, command string) ( string, string )
+	store(username string, command string) ( string, string )
+	item(username string, command string) ( string, string )
+	combat(username string, command string) ( string, string )
+	in_team(username string) ( string )
+	get_state(username string, command string) ( string, string )
 	*/
 }
 
@@ -85,25 +89,25 @@ func main() {
 		//check if open session
 
 
-func checkstate(user string) bool {
+func checkstate(username string) bool {
 
-	if user == "Ham" {
+	if username == "Ham" {
 		return true
 	} else {
 		return false
 	}
 }
 
-func create_player(user string) (string, string) {
+func create_player(username string) (string, string) {
 	//player creation
-	message := "Create player: UserID passed in: " + user
+	message := "Create player: UserID passed in: " + username
 	prompt := "You awaken on a cushion of wildflowers in a small clearing near the edge of some woods.  In the distance you can see a small village.  You stand up, brush yourself off, and head into the village."
 
-	return message
+	return message, prompt
 
 }
 
-func get_status(user string, command string) ( string, string ) {
+func get_status(username string, command string) ( string, string ) {
 	// player details
 
 	/*
@@ -114,7 +118,7 @@ func get_status(user string, command string) ( string, string ) {
 		decide the format for this state tracking 
 	*/
 
-	err := checkstate(user)
+	err := checkstate(username)
 
 	if err == false {
 		fmt.Println("User unable to do this command at this time.")
@@ -135,7 +139,7 @@ func get_status(user string, command string) ( string, string ) {
 			fmt.Println("you didn't check anything!")
 	}
 	
-	message:= "Get status: " + user
+	message:= "Get status: " + username
 	prompt := "You check your backpack and see what items you have."
 
 	
@@ -145,7 +149,7 @@ func get_status(user string, command string) ( string, string ) {
 }
 
 
-func move_area(user string, command string) ( string, string) {
+func move_area(username string, command string) ( string, string) {
 	// navigation
 	/*
 		- check if the player can move (stuck in combat? middle of player creation or exchange?)
@@ -160,7 +164,7 @@ func move_area(user string, command string) ( string, string) {
 			Dungeon
 	*/
 
-	err := checkstate(user)
+	err := checkstate(username)
 	if err == false {
 		fmt.Println("User unable to do this command at this time.")
 		return "bad state"
@@ -189,7 +193,7 @@ func move_area(user string, command string) ( string, string) {
 			fmt.Println("Invalid location!")
 	}
 
-	message:= "Move area: " + user + " to " + area
+	message:= "Move area: " + username + " to " + area
 	fmt.Printf("Fields are: %q", args)
 
 	prompt := "You collect your belongings, and set off for the " + area
@@ -197,7 +201,7 @@ func move_area(user string, command string) ( string, string) {
 }
 
 
-func store(user string, command string) ( string, string ) {
+func store(username string, command string) ( string, string ) {
 	// store
 
 	/*
@@ -206,7 +210,7 @@ func store(user string, command string) ( string, string ) {
 		- update inventory
 		- complete the transaction and notify the player
 	*/
-	err := checkstate(user)
+	err := checkstate(username)
 	if err == false {
 		fmt.Println("User unable to do this command at this time.")
 		return "bad state"
@@ -246,7 +250,7 @@ func store(user string, command string) ( string, string ) {
 	return message, prompt
 }
 
-func item(user string, command string) ( string, string ) {
+func item(username string, command string) ( string, string ) {
 	/*
 		- check if the player is in a valid state
 		- determine if the request is valid
@@ -267,7 +271,7 @@ func item(user string, command string) ( string, string ) {
 	return message, prompt
 }
 
-func combat(user string, command string) (string, string) {
+func combat(username string, command string) (string, string) {
 	// fight
 
 	/*
@@ -288,21 +292,21 @@ func combat(user string, command string) (string, string) {
 	prompt := "You attack the monster"
 	fmt.Printf("Fields are: %q", args)
 
-	return message
+	return message, prompt
 
 }
 
 // internal function to determine if teamwork should be used in combat
-func in_team(user string) string {
+func in_team(username string) string {
 	// is the user in a team currently?
 
-		message:= "Team check: " + "user checked: " + user
+		message:= "Team check: " + "user checked: " + username
 
 	return message
 }
 
 
-func get_state(user string, command string) ( string, string ) {
+func get_state(username string, command string) ( string, string ) {
 	//Is the user in town?  Is the user in combat?
 
 	args := strings.Fields(command)
@@ -312,7 +316,7 @@ func get_state(user string, command string) ( string, string ) {
 		return "invalid"
 	}
 
-	message:= "Check use state: " + user
+	message:= "Check use state: " + username
 	prompt := "You look down at yourself and assess the damage."
 
 	return message, prompt
