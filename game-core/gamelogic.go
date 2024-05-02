@@ -5,11 +5,11 @@ import(
 	"strconv"
 	"strings"
 )
-
+// https://www.geeksforgeeks.org/nested-structure-in-golang/
 
 func main() {
 
-	type inventory struct {
+	type Inventory struct {
 		i_apple			int
 		i_potion		int
 		i_potionPlus	int
@@ -17,9 +17,8 @@ func main() {
 		b_gold			int
 	}
 
-	type character struct {
+	type Character struct {
 
-		inventory 			inventory
 		username			string
 		user				string
 		c_level				int
@@ -35,53 +34,80 @@ func main() {
 		w_s_axe				int
 		w_s_spear			int
 		p_state				string
-		c_area				string	
+		c_area				string
+		c_e_weapon			int
+		c_e_armor			int
+		inventory 			Inventory
 	}
 
-	user_stats := character{
-		username = "Yaac-ity_snorsh",	//Discord username | uid
-		user = "Ham",					//Player character name
-		c_level = 1,						//Character level
-		c_health = 100,					//Current Health
-		m_health = 100,					//Max Health
-		b_health = 0,					//Bonus Health
-		s_strength = 10,					//Strength Stat	
-		s_agility = 10,					//Agility Stat
-		s_constitution = 10,				//Constitution Stat
-		s_intelligence = 10,				//Intelligence Stat
-		s_wisdom = 10,					//Wisdom Stat
-		w_s_sword = 10,					//Sword type skill
-		w_s_axe = 0,						//Axe type skill
-		w_s_spear = 0,					//Spear type skill
-		p_state = "normal",				//player state
-		c_area = "town",					//current location
-		c_e_weapon = 0,					//Equipped weapon index
-		c_e_armor = 0,					//Equipped Armor	
-		inventory: inventory{
-			c_gold = 0,						//gold in inventory
-			b_gold = 0,						//gold in bank
-			i_apple = 1,						//apples in inventory
-			i_potion = 0,					//potions in inventory
-			i_potionPlus = 0,				//Plus Potions in inventory
+	//Discord username | uid
+	//Player character name
+	//Character level
+	//Current Health
+	//Max Health
+	//Bonus Health
+	//Strength Stat	
+	//Agility Stat
+	//Constitution Stat
+	//Intelligence Stat
+	//Wisdom Stat
+	//Sword type skill
+	//Axe type skill
+	//Spear type skill
+	//player state
+	//current location
+	//Equipped weapon index
+	//Equipped Armor
+		//apples in inventory
+		//potions in inventory
+		//Plus Potions in inventory
+		//gold in inventory
+		//gold in bank	
+
+	userStats := &Character{
+		username: "Yaac-itysnorsh",		
+		user: "Ham",					
+		c_level: 1,						
+		c_health: 100,					
+		m_health: 100,					
+		b_health: 0,					
+		s_strength: 10,					
+		s_agility: 10,					
+		s_constitution: 10,				
+		s_intelligence: 10,				
+		s_wisdom: 10,					
+		w_s_sword: 10,					
+		w_s_axe: 0,						
+		w_s_spear: 0,					
+		p_state: "normal",				
+		c_area: "town",					
+		c_e_weapon: 0,					
+		c_e_armor: 0,				
+		inventory: Inventory{
+			i_apple: 1,						
+			i_potion: 0,					
+			i_potionPlus: 0,				
+			c_gold: 0,						
+			b_gold: 0,						
 
 		},
 	}
 	
-	fmt.Printf("%+v\n", user_stats)
-	command := "shop buy potion 10"
-	message := store(user, command)
-	fmt.Println("\n" + message)
+	fmt.Printf("%+v\n", userStats)
+	//command := "shop buy potion 10"
+	//message, prompt := store(userStats, command)
+	//fmt.Println("\n" + message + prompt)
 
 	/*
 	checkstate(username string) ( bool )
-	create_player(username string) ( string, string )
-	get_status(username string, command string)  ( string, string )
-	move_area(username string, command string) ( string, string )
+	createPlayer(username string) ( string, string )
+	getStatus(username string, command string)  ( string, string )
+	moveArea(username string, command string) ( string, string )
 	store(username string, command string) ( string, string )
 	item(username string, command string) ( string, string )
 	combat(username string, command string) ( string, string )
-	in_team(username string) ( string )
-	get_state(username string, command string) ( string, string )
+	inTeam(username string) ( string )
+	getState(username string, command string) ( string, string )
 	*/
 }
 
@@ -93,7 +119,7 @@ func main() {
 		//check if open session
 
 
-func checkstate(username string) bool {
+func checkState(username string) bool {
 
 	if username == "Ham" {
 		return true
@@ -102,7 +128,7 @@ func checkstate(username string) bool {
 	}
 }
 
-func create_player(username string) (string, string) {
+func createPlayer(username string) (string, string) {
 	//player creation
 	message := "Create player: UserID passed in: " + username
 	prompt := "You awaken on a cushion of wildflowers in a small clearing near the edge of some woods.  In the distance you can see a small village.  You stand up, brush yourself off, and head into the village."
@@ -111,7 +137,7 @@ func create_player(username string) (string, string) {
 
 }
 
-func get_status(username string, command string) ( string, string ) {
+func getStatus(username string, command string) ( string, string ) {
 	// player details
 
 	/*
@@ -122,18 +148,18 @@ func get_status(username string, command string) ( string, string ) {
 		decide the format for this state tracking 
 	*/
 
-	err := checkstate(username)
+	err := checkState(username)
 
 	if err == false {
 		fmt.Println("User unable to do this command at this time.")
-		return "bad state"
+		return "bad state", "bad state"
 	}
 
 	args := strings.Fields(command)
 
 	if len(args) == 0 {
 		fmt.Println("no commands passed")
-		return "invalid"
+		return "invalid" , "invalid"
 	}
 	
 	switch verb := args[1]; verb {
@@ -153,7 +179,7 @@ func get_status(username string, command string) ( string, string ) {
 }
 
 
-func move_area(username string, command string) ( string, string) {
+func moveArea(username string, command string) ( string, string) {
 	// navigation
 	/*
 		- check if the player can move (stuck in combat? middle of player creation or exchange?)
@@ -168,16 +194,16 @@ func move_area(username string, command string) ( string, string) {
 			Dungeon
 	*/
 
-	err := checkstate(username)
+	err := checkState(username)
 	if err == false {
 		fmt.Println("User unable to do this command at this time.")
-		return "bad state"
+		return "bad state", "bad state"
 	}
 
 	args := strings.Fields(command)
 	if len(args) == 0 {
 		fmt.Println("no commands passed")
-		return "invalid"
+		return "invalid", "invalid"
 	}
 	
 	area := args[1]
@@ -205,7 +231,7 @@ func move_area(username string, command string) ( string, string) {
 }
 
 
-func store(username string, command string) ( string, string ) {
+func store(pc *userStats, command string) ( string, string ) {
 	// store
 
 	/*
@@ -214,10 +240,10 @@ func store(username string, command string) ( string, string ) {
 		- update inventory
 		- complete the transaction and notify the player
 	*/
-	err := checkstate(username)
+	err := checkState( pc.username )
 	if err == false {
 		fmt.Println("User unable to do this command at this time.")
-		return "bad state"
+		return "bad state", "bad state"
 	}
 
 	args := strings.Fields(command)
@@ -226,9 +252,9 @@ func store(username string, command string) ( string, string ) {
 		return "invalid", "invalid"
 	}
 	
-//	verb := args[1]
-//	item := args[2]
-//	count := "3"
+	verb := args[1]
+	item := args[2]
+	count := "3"
 //	amount, e1 := strconv.Atoi(count);
 //
 //	if e1 != nil {
@@ -247,7 +273,7 @@ func store(username string, command string) ( string, string ) {
 	}
 
 	prompt := "You ask the shopkeeper about buying a" + args[2]
-	message:= "Store menu: Action: " + verb + "item:" + item + "count: " + args[3]
+	message:= "Store menu: Action: " + verb + "item:" + item + "count: " + count
 
 	fmt.Printf("Fields are: %q", args)
 
@@ -262,13 +288,12 @@ func item(username string, command string) ( string, string ) {
 		- complete the transaction and notify the player
 	*/
 	args := strings.Fields(command)
-	args := strings.Fields(command)
 	if len(args) < 2 {
 		fmt.Println("not enough arguments")
 		return "invalid", "invalid"
 	}
 	prompt := "You use a " + args[2]
-	message:= "Used item: " + action
+	message:= "Used item: " + args[1]
 
 	fmt.Printf("Fields are: %q", args)
 
@@ -291,6 +316,7 @@ func combat(username string, command string) (string, string) {
 	if len(args) < 2 {
 		fmt.Println("not enough arguments")
 		return "invalid", "invalid"
+	}
 
 	message:= "Player is in combat:"
 	prompt := "You attack the monster"
@@ -301,23 +327,24 @@ func combat(username string, command string) (string, string) {
 }
 
 // internal function to determine if teamwork should be used in combat
-func in_team(username string) string {
+
+func inTeam(username string) string {
 	// is the user in a team currently?
 
-		message:= "Team check: " + "user checked: " + username
+	message:= "Team check: user checked: " + username
 
 	return message
 }
 
 
-func get_state(username string, command string) ( string, string ) {
+func getState(username string, command string) ( string, string ) {
 	//Is the user in town?  Is the user in combat?
 
 	args := strings.Fields(command)
 	fmt.Printf("Fields are: %q", args)
 	if len(args) < 1 {
 		fmt.Println("not enough arguments")
-		return "invalid"
+		return "invalid", "invalid"
 	}
 
 	message:= "Check use state: " + username
