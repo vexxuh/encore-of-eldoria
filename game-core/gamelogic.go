@@ -4,41 +4,11 @@ import(
 	"fmt"
 	"strconv"
 	"strings"
+	"encoding/json"
 )
+
 // https://www.geeksforgeeks.org/nested-structure-in-golang/
 
-func main() {
-
-	type Inventory struct {
-		i_apple			int
-		i_potion		int
-		i_potionPlus	int
-		c_gold			int
-		b_gold			int
-	}
-
-	type Character struct {
-
-		username			string
-		user				string
-		c_level				int
-		c_health			int
-		m_health			int
-		b_health			int
-		s_strength			int	
-		s_agility			int
-		s_constitution		int
-		s_intelligence		int
-		s_wisdom			int
-		w_s_sword			int
-		w_s_axe				int
-		w_s_spear			int
-		p_state				string
-		c_area				string
-		c_e_weapon			int
-		c_e_armor			int
-		inventory 			Inventory
-	}
 
 	//Discord username | uid
 	//Player character name
@@ -64,7 +34,39 @@ func main() {
 		//gold in inventory
 		//gold in bank	
 
-	userStats := &Character{
+type Inventory struct {
+	i_apple			int
+	i_potion		int
+	i_potionPlus	int
+	c_gold			int
+	b_gold			int
+}
+
+type Character struct {
+	username			string
+	user				string
+	c_level				int
+	c_health			int
+	m_health			int
+	b_health			int
+	s_strength			int	
+	s_agility			int
+	s_constitution		int
+	s_intelligence		int
+	s_wisdom			int
+	w_s_sword			int
+	w_s_axe				int
+	w_s_spear			int
+	p_state				string
+	c_area				string
+	c_e_weapon			int
+	c_e_armor			int
+	inventory 			Inventory
+}
+
+func main() {
+
+	userStats := Character{
 		username: "Yaac-itysnorsh",		
 		user: "Ham",					
 		c_level: 1,						
@@ -94,9 +96,10 @@ func main() {
 	}
 	
 	fmt.Printf("%+v\n", userStats)
-	//command := "shop buy potion 10"
-	//message, prompt := store(userStats, command)
-	//fmt.Println("\n" + message + prompt)
+	printCharacter(&userStats)
+	command := "shop buy potion 10"
+	message, prompt := store(&userStats, command)
+	fmt.Println("\n" + message + prompt)
 
 	/*
 	checkstate(username string) ( bool )
@@ -118,6 +121,11 @@ func main() {
 		// playerID, command, arguments
 		//check if open session
 
+
+func printCharacter(pc *Character){
+	str, _ := json.MarshalIndent(pc, "", "\t")
+	fmt.Println(string(str))
+}
 
 func checkState(username string) bool {
 
@@ -231,7 +239,7 @@ func moveArea(username string, command string) ( string, string) {
 }
 
 
-func store(pc *userStats, command string) ( string, string ) {
+func store(pc *Character, command string) ( string, string ) {
 	// store
 
 	/*
@@ -255,11 +263,12 @@ func store(pc *userStats, command string) ( string, string ) {
 	verb := args[1]
 	item := args[2]
 	count := "3"
-//	amount, e1 := strconv.Atoi(count);
-//
-//	if e1 != nil {
-//		amount := 1	
-//	}
+	amount, e1 := strconv.Atoi(count);
+
+	if e1 == nil {
+		fmt.Printf("%T \n %v", amount, amount)
+	
+	}
 
 	switch verb := args[1]; verb {
 		case "buy":
