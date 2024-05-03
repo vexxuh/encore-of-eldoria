@@ -1,63 +1,219 @@
 package gamecore
-
-import (
+import(
+	"fmt"
 	"strconv"
+	"strings"
+	"encoding/json"
 )
 
-/*
-func main() {
-	user := "Ham"
-	message := create_player(user)
-	fmt.Println(message)
+// https://www.geeksforgeeks.org/nested-structure-in-golang/
+
+
+	//Discord username | uid
+	//Player character name
+	//Character level
+	//Current Health
+	//Max Health
+	//Bonus Health
+	//Strength Stat	
+	//Agility Stat
+	//Constitution Stat
+	//Intelligence Stat
+	//Wisdom Stat
+	//Sword type skill
+	//Axe type skill
+	//Spear type skill
+	//player state
+	//current location
+	//Equipped weapon index
+	//Equipped Armor
+		//apples in inventory
+		//potions in inventory
+		//Plus Potions in inventory
+		//gold in inventory
+		//gold in bank	
+
+type Inventory struct {
+	i_apple			int
+	i_potion		int
+	i_potionPlus	int
+	c_gold			int
+	b_gold			int
 }
 
-*/
+type Character struct {
+	username			string
+	user				string
+	c_level				int
+	c_health			int
+	m_health			int
+	b_health			int
+	s_strength			int	
+	s_agility			int
+	s_constitution		int
+	s_intelligence		int
+	s_wisdom			int
+	w_s_sword			int
+	w_s_axe				int
+	w_s_spear			int
+	p_state				string
+	c_area				string
+	c_e_weapon			int
+	c_e_armor			int
+	inventory 			Inventory
+}
 
-// functions
-// command parser
-// playerID, command, arguments
-//check if open session
 
-func create_player(user string) string {
+func printCharacter(pc *Character){
+	str, _ := json.MarshalIndent(pc, "", "\t")
+	fmt.Println(string(str))
+}
+
+func checkState(username string) bool {
+
+	if username == "Ham" {
+		return true
+	} else {
+		return false
+	}
+}
+
+func createPlayer(username string) (string, string, Character) {
 	//player creation
-	message := "Create player: UserID passed in: " + user
 
-	return message
+		userStats := Character{
+		username: username,		
+		user: "Ham",					
+		c_level: 1,						
+		c_health: 100,					
+		m_health: 100,					
+		b_health: 0,					
+		s_strength: 10,					
+		s_agility: 10,					
+		s_constitution: 10,				
+		s_intelligence: 10,				
+		s_wisdom: 10,					
+		w_s_sword: 10,					
+		w_s_axe: 0,						
+		w_s_spear: 0,					
+		p_state: "normal",				
+		c_area: "town",					
+		c_e_weapon: 0,					
+		c_e_armor: 0,				
+		inventory: Inventory{
+			i_apple: 1,						
+			i_potion: 0,					
+			i_potionPlus: 0,				
+			c_gold: 0,						
+			b_gold: 0,						
+
+		},
+	}
+	
+	fmt.Printf("%+v\n", userStats)
+	
+	message := "Create player: UserID passed in: " + username
+	prompt := "You awaken on a cushion of wildflowers in a small clearing near the edge of some woods.  In the distance you can see a small village.  You stand up, brush yourself off, and head into the village."
+
+	return message, prompt, userStats
 
 }
 
-func get_status(user string) string {
+func getStatus(username string, command string) ( string, string ) {
 	// player details
 
 	/*
 		lookup the player and get their user state. return the action they are currently in the middle of.
 		0 = does not exist
 		1 = player creation started
-
-		decide the format for this state tracking
+	
+		decide the format for this state tracking 
 	*/
 
-	message := "Get status: " + user
+	err := checkState(username)
 
-	return message
+	if err == false {
+		fmt.Println("User unable to do this command at this time.")
+		return "bad state", "bad state"
+	}
 
+	args := strings.Fields(command)
+
+	if len(args) == 0 {
+		fmt.Println("no commands passed")
+		return "invalid" , "invalid"
+	}
+	
+	switch verb := args[1]; verb {
+		case "health":
+			fmt.Println("you checked your health!") 
+		default:
+			fmt.Println("you didn't check anything!")
+	}
+	
+	message:= "Get status: " + username
+	prompt := "You check your backpack and see what items you have."
+
+	
+	fmt.Printf("Fields are: %q", args)
+
+	return message, prompt
 }
 
-func move_area(user string, area string) string {
-	// navigation
 
+func moveArea(username string, command string) ( string, string) {
+	// navigation
 	/*
 		- check if the player can move (stuck in combat? middle of player creation or exchange?)
 		- move to the selected area
 		- provide flavor text for the area
+
+		Areas:
+			Town
+			Plains
+			Forest
+			Cave
+			Dungeon
 	*/
-	message := "Move area: " + user + " to " + area
 
-	return message
+	err := checkState(username)
+	if err == false {
+		fmt.Println("User unable to do this command at this time.")
+		return "bad state", "bad state"
+	}
 
+	args := strings.Fields(command)
+	if len(args) == 0 {
+		fmt.Println("no commands passed")
+		return "invalid", "invalid"
+	}
+	
+	area := args[1]
+
+	switch area {
+		case "Town":
+			fmt.Println("you travel to the town!") 
+		case "Plains":
+			fmt.Println("you travel to the plains!") 
+		case "Forest":
+			fmt.Println("you travel to the forest!") 
+		case "Cave":
+			fmt.Println("you travel to the cave!") 
+		case "Dungeon":
+			fmt.Println("you travel to the dungeon!") 
+		default:
+			fmt.Println("Invalid location!")
+	}
+
+	message:= "Move area: " + username + " to " + area
+	fmt.Printf("Fields are: %q", args)
+
+	prompt := "You collect your belongings, and set off for the " + area
+	return message, prompt
 }
 
-func store(user string, action string, count int) string {
+
+func store(pc *Character, command string) ( string, string ) {
 	// store
 
 	/*
@@ -66,25 +222,68 @@ func store(user string, action string, count int) string {
 		- update inventory
 		- complete the transaction and notify the player
 	*/
+	err := checkState( pc.username )
+	if err == false {
+		fmt.Println("User unable to do this command at this time.")
+		return "bad state", "bad state"
+	}
 
-	message := "Store menu: Action: " + action + "count: " + strconv.Itoa(count)
+	args := strings.Fields(command)
+	if len(args) < 3 {
+		fmt.Println("not enough arguments")
+		return "invalid", "invalid"
+	}
+	
+	verb := args[1]
+	item := args[2]
+	count := "3"
+	amount, e1 := strconv.Atoi(count);
 
-	return message
+	if e1 == nil {
+		fmt.Printf("%T \n %v", amount, amount)
+	
+	}
+
+	switch verb := args[1]; verb {
+		case "buy":
+			fmt.Println("Buying") 
+		case "sell":
+			fmt.Println("Selling") 
+		case "info":
+			fmt.Println("Information") 
+		default:
+			fmt.Println("The shopkeeper looks at you confused")
+	}
+
+	prompt := "You ask the shopkeeper about buying a" + args[2]
+	message:= "Store menu: Action: " + verb + "item:" + item + "count: " + count
+
+	fmt.Printf("Fields are: %q", args)
+
+	return message, prompt
 }
 
-func item(user string, action string, count int) string {
+func item(username string, command string) ( string, string ) {
 	/*
 		- check if the player is in a valid state
 		- determine if the request is valid
 		- update inventory
 		- complete the transaction and notify the player
 	*/
-	message := "Used item: " + action
+	args := strings.Fields(command)
+	if len(args) < 2 {
+		fmt.Println("not enough arguments")
+		return "invalid", "invalid"
+	}
+	prompt := "You use a " + args[2]
+	message:= "Used item: " + args[1]
 
-	return message
+	fmt.Printf("Fields are: %q", args)
+
+	return message, prompt
 }
 
-func combat(user string, action string, target int) string {
+func combat(username string, command string) (string, string) {
 	// fight
 
 	/*
@@ -95,29 +294,49 @@ func combat(user string, action string, target int) string {
 		- update the player with the turn results
 		- complete combat and award experience
 	*/
-	message := "Player is in combat: Player: " + user + " Attack Action: " + action + " Target: " + strconv.Itoa(target)
 
-	return message
+	args := strings.Fields(command)
+	if len(args) < 2 {
+		fmt.Println("not enough arguments")
+		return "invalid", "invalid"
+	}
+
+	message:= "Player is in combat:"
+	prompt := "You attack the monster"
+	fmt.Printf("Fields are: %q", args)
+
+	return message, prompt
 
 }
 
-func in_team(user string) string {
+// internal function to determine if teamwork should be used in combat
+
+func inTeam(username string) string {
 	// is the user in a team currently?
 
-	message := "Team check: " + "user checked: " + user
+	message:= "Team check: user checked: " + username
 
 	return message
 }
 
-func get_state(user string) string {
+
+func getState(username string, command string) ( string, string ) {
 	//Is the user in town?  Is the user in combat?
 
-	message := "Check use state: " + user
+	args := strings.Fields(command)
+	fmt.Printf("Fields are: %q", args)
+	if len(args) < 1 {
+		fmt.Println("not enough arguments")
+		return "invalid", "invalid"
+	}
 
-	return message
+	message:= "Check use state: " + username
+	prompt := "You look down at yourself and assess the damage."
+
+	return message, prompt
 }
 
-// creature list
+	// creature list
 
 /*
 	Field
@@ -125,7 +344,7 @@ func get_state(user string) string {
 			bite
 			scratch
 			infection
-
+	
 		Feral Hound
 			bite
 			scratch
@@ -154,3 +373,4 @@ func get_state(user string) string {
 
 
 */
+
