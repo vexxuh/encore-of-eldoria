@@ -8,12 +8,13 @@ import (
 )
 
 type BackendProcessorParams struct {
-	Msg string `json:"msg"`
+	Msg      string `json:"msg"`
+	PlayerId string `json:"player-id"`
 }
 
 // backendGameProcessorRequest sends request to the backend game server then recieves the response of data!
-func backendGameProcessorRequest(apiEndpoint, userData string) (*BackendResponse, error) {
-	requestData, err := backendRequest(apiEndpoint, &BackendProcessorParams{Msg: userData})
+func backendGameProcessorRequest(apiEndpoint, userID string, eoeMessage string) (*DiscordMessageResponse, error) {
+	requestData, err := backendRequest(apiEndpoint, &BackendProcessorParams{Msg: eoeMessage, PlayerId: userID})
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +22,7 @@ func backendGameProcessorRequest(apiEndpoint, userData string) (*BackendResponse
 	return requestData, nil
 }
 
-func backendRequest(endpoint string, backendParams *BackendProcessorParams) (*BackendResponse, error) {
+func backendRequest(endpoint string, backendParams *BackendProcessorParams) (*DiscordMessageResponse, error) {
 	url := "http://127.0.0.1:4000/" + endpoint
 
 	// Convert request data to JSON
@@ -44,11 +45,11 @@ func backendRequest(endpoint string, backendParams *BackendProcessorParams) (*Ba
 	}
 
 	// Parse the response JSON into ResponseStruct
-	var responseData BackendResponse
+	var responseData DiscordMessageResponse
 	err = json.Unmarshal(responseBody, &responseData)
 	if err != nil {
 		return nil, err
 	}
 
-	return &BackendResponse{}, nil
+	return &responseData, nil
 }

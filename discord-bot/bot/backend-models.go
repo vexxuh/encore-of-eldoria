@@ -1,5 +1,10 @@
 package discordbot
 
+type DiscordMessageResponse struct {
+	P       BackendResponse `json:"player"`
+	TextGen string          `json:"gen-text"`
+}
+
 type BackendResponse struct {
 	Inventory      BackendInventory `json:"inventory"`
 	Username       string           `json:"username"`
