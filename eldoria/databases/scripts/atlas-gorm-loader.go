@@ -7,12 +7,13 @@ import (
 
 	_ "ariga.io/atlas-go-sdk/recordriver"
 	"ariga.io/atlas-provider-gorm/gormschema"
-	"encore.app/eldoria/game-core/data/models"
+	models "encore.app/eldoria/game-core/data"
 )
 
 // Define the models to generate migrations for.
 var ms = []any{
-	&models.Attacks{},
+	&models.Character{},
+	&models.Inventory{},
 }
 
 func main() {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	gamecore "encore.app/eldoria/game-core"
 	orch "encore.app/eldoria/orchestration"
 	"encore.dev/config"
 	"encore.dev/storage/sqldb"
@@ -45,10 +46,12 @@ func initService() (*Service, error) {
 // Attack defines a testing endpoint for connection testing
 //
 // encore:api public
-func (s *Service) Attack(ctx context.Context, params *AttackParam) (*AttackResponse, error) {
-	msg, err := orch.Attack(s.db, secrets.NovelApiKey, params.Type)
+func (s *Service) CreateCharacter(ctx context.Context, params *gamecore.BackendProcessorRequest) (*gamecore.DiscordMessageResponse, error) {
+	response, err := orch.GenCharacter(s.db, secrets.NovelApiKey, params.Msg, params.PlayerId)
+	print := fmt.Sprintf("User: %s, C_level: %d, C_health: %d", response.P.User, response.P.C_level, response.P.C_health)
+	fmt.Println(print)
 	if err != nil {
-		return &AttackResponse{Message: fmt.Sprintf("Hmm seem like %s is not a valid attack... please try this again "+err.Error(), params.Type)}, nil
+		fmt.Printf("msg: %vn", response)
 	}
-	return &AttackResponse{Message: msg}, nil
+	return &response, nil
 }
