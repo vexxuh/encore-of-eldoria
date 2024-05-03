@@ -64,65 +64,6 @@ type Character struct {
 	inventory 			Inventory
 }
 
-func main() {
-
-	userStats := Character{
-		username: "Yaac-itysnorsh",		
-		user: "Ham",					
-		c_level: 1,						
-		c_health: 100,					
-		m_health: 100,					
-		b_health: 0,					
-		s_strength: 10,					
-		s_agility: 10,					
-		s_constitution: 10,				
-		s_intelligence: 10,				
-		s_wisdom: 10,					
-		w_s_sword: 10,					
-		w_s_axe: 0,						
-		w_s_spear: 0,					
-		p_state: "normal",				
-		c_area: "town",					
-		c_e_weapon: 0,					
-		c_e_armor: 0,				
-		inventory: Inventory{
-			i_apple: 1,						
-			i_potion: 0,					
-			i_potionPlus: 0,				
-			c_gold: 0,						
-			b_gold: 0,						
-
-		},
-	}
-	
-	fmt.Printf("%+v\n", userStats)
-	printCharacter(&userStats)
-	str, _ := json.MarshalIndent(&userStats, "", "\t")
-	fmt.Println(string(str))
-	command := "shop buy potion 10"
-	message, prompt := store(&userStats, command)
-	fmt.Println("\n" + message + prompt)
-
-	/*
-	checkstate(username string) ( bool )
-	createPlayer(username string) ( string, string )
-	getStatus(username string, command string)  ( string, string )
-	moveArea(username string, command string) ( string, string )
-	store(username string, command string) ( string, string )
-	item(username string, command string) ( string, string )
-	combat(username string, command string) ( string, string )
-	inTeam(username string) ( string )
-	getState(username string, command string) ( string, string )
-	*/
-}
-
-
-
-// functions
-	// command parser
-		// playerID, command, arguments
-		//check if open session
-
 
 func printCharacter(pc *Character){
 	str, _ := json.MarshalIndent(pc, "", "\t")
