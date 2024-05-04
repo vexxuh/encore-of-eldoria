@@ -45,6 +45,7 @@ type Character struct {
 	username			string
 	user				string
 	c_level				int
+	c_experience		int
 	c_health			int
 	m_health			int
 	b_health			int
@@ -54,8 +55,11 @@ type Character struct {
 	s_intelligence		int
 	s_wisdom			int
 	w_s_sword			int
+	w_e_sword			int
 	w_s_axe				int
+	w_e_axe				int
 	w_s_spear			int
+	w_e_spear			int
 	p_state				string
 	c_area				string
 	c_e_weapon			int
@@ -113,13 +117,14 @@ func checkState(s string) ( string, bool ) {
 }
 
 
-func createPlayer(username string) (string, string, Character) {
+func createPlayer(username string, name string) (string, string, Character) {
 	//player creation
 
 		userStats := Character{
 		username: username,		
-		user: "Ham",					
+		user: name,					
 		c_level: 1,						
+		c_experience: 0,
 		c_health: 100,					
 		m_health: 100,					
 		b_health: 0,					
@@ -128,9 +133,12 @@ func createPlayer(username string) (string, string, Character) {
 		s_constitution: 10,				
 		s_intelligence: 10,				
 		s_wisdom: 10,					
-		w_s_sword: 10,					
-		w_s_axe: 0,						
-		w_s_spear: 0,					
+		w_s_sword: 0,
+		w_e_sword: 0,
+		w_s_axe: 0,
+		w_e_axe: 0,
+		w_s_spear: 0,
+		w_e_spear: 0,
 		p_state: "normal",				
 		c_area: "town",					
 		c_e_weapon: 0,					
@@ -164,14 +172,13 @@ func getStatus(pc *Character, command string) ( string, string ) {
 		1 = player creation started
 	
 		decide the format for this state tracking 
+
+		accepted nouns:
+			health: return your health information
+			stats: return your stats
+			inventory: return your current inventory
 	*/
 
-	msg, pass := checkState(pc.p_state)
-
-	if pass == false {
-		fmt.Println("User unable to do this command at this time. reason: " + msg)
-		return "Check State Fail: " + msg
-	}
 
 	args := strings.Fields(command)
 
@@ -180,7 +187,7 @@ func getStatus(pc *Character, command string) ( string, string ) {
 		return "check subject not provided" , "You though about checking something, but forgot it the moment you begin to act.  You hate it when that happens."
 	}
 	
-	switch verb := args[1]; verb {
+	switch noun := args[1]; noun {
 		case "health":
 			fmt.Println("you checked your health!")
 			message := "your current HP is: " + pc.c_health + " + (" + pc.b_health + " bonus hp)/" + pc.m_health
@@ -204,13 +211,12 @@ func getStatus(pc *Character, command string) ( string, string ) {
 
 
 func moveArea(pc *Character, command string) ( string, string) {
+
 	// navigation
 	/*
 		- check if the player can move (stuck in combat? middle of player creation or exchange?)
 		- move to the selected area
 		- provide flavor text for the area
-
-
 	*/
 
 	// err := checkState(username)
@@ -218,6 +224,13 @@ func moveArea(pc *Character, command string) ( string, string) {
 		// fmt.Println("User unable to do this command at this time.")
 		// return "bad state", "bad state"
 	// }
+
+	msg, pass := checkState(pc.p_state)
+
+	if pass == false {
+		fmt.Println("User unable to do this command at this time. reason: " + msg)
+		return "Check State Fail: " + msg
+	}
 
 	args := strings.Fields(command)
 	if len(args) < 2 {
@@ -259,10 +272,12 @@ func store(pc *Character, command string) ( string, string ) {
 		- update inventory
 		- complete the transaction and notify the player
 	*/
-	err := checkState( pc.username )
-	if err == false {
-		fmt.Println("User unable to do this command at this time.")
-		return "bad state", "bad state"
+
+	msg, pass := checkState(pc.p_state)
+
+	if pass == false {
+		fmt.Println("User unable to do this command at this time. reason: " + msg)
+		return "Check State Fail: " + msg, "User unable to do this command at this time."
 	}
 
 	args := strings.Fields(command)
@@ -277,12 +292,15 @@ func store(pc *Character, command string) ( string, string ) {
 
 	if e1 == nil {
 		fmt.Printf("%T \n %v", amount, amount)
+		amount = 1
 	
 	}
 
+	// if just 'store' command, show items for sale
+
 	switch verb := args[1]; verb {
 		case "buy":
-			fmt.Println("Buying") 
+			fmt.Println("Buying")
 		case "sell":
 			fmt.Println("Selling") 
 		case "info":
@@ -306,25 +324,38 @@ func cheatMode(pc *Character, command string) (string, string) {
 	pc.inventory.i_potion = pc.inventory.i_potion + 10
 	pc.inventory.i_potionPlus = pc.inventory.i_potionPlus + 10
 
-	message := "Cheat items added to inventroy"
+	message := "Cheat items added to inventory"
 	prompt := "Your backpack suddenly becomes heavier, as if several new things just appeared in it."
 
 	return message, prompt
 }
 
 
-func item(pc *Character, command string) ( string, string ) {
-	/*
-		- check if the player is in a valid state
-		- determine if the request is valid
-		- update inventory
-		- complete the transaction and notify the player
-	*/
+func inventory(pc *Character, command string) ( string, string ) {
+
 	args := strings.Fields(command)
-	if len(args) < 2 {
+	prompt := " - "
+	message:= " - "
+	amount, e1 := strconv.Atoi(args[3]);
+
+	if len(args) == 1{
+			fmt.Println("Inventory check")
+			contents := "Bag:\nApples: " + strconv.Itoa(pc.inventory.i_apple) + "\nPotions: " strconv.Itoa(pc.inventory.i_potion) + "\nPlusPotions: " strconv.Itoa(pc.inventory.i_potionPlus) 
+			message := "you check your inventory" + contents
+			prompt := "You look inside your bag. \n" + contents
+	}
+
+	if len(args) == 2 && args[1] == "use" {
+
+//equip
+
+	if len(args) == 3 && args[1] == "use" {
 		fmt.Println("not enough arguments")
 		return "not enough arguments", "You look at your empty hands, unsure of what you were trying to do."
 	}
+
+
+
 	prompt := "You use a " + args[2]
 	message:= "Used item: " + args[1]
 
