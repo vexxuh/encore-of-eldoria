@@ -1,4 +1,4 @@
-package gamelogic
+package gamecore
 
 import (
 	"encoding/json"
