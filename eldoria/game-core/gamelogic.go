@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	models "encore.app/eldoria/gamecore/data" 
 )
 
 // https://www.geeksforgeeks.org/nested-structure-in-golang/
@@ -33,59 +34,6 @@ import (
 //gold in inventory
 //gold in bank
 
-type Inventory struct {
-	i_apple      int
-	i_potion     int
-	i_potionPlus int
-	c_gold       int
-	b_gold       int
-}
-
-type Character struct {
-	username       string
-	user           string
-	c_level        int
-	c_experience   int
-	c_health       int
-	m_health       int
-	b_health       int
-	s_strength     int
-	s_agility      int
-	s_constitution int
-	s_intelligence int
-	s_wisdom       int
-	w_s_sword      int
-	w_e_sword      int
-	w_s_axe        int
-	w_e_axe        int
-	w_s_spear      int
-	w_e_spear      int
-	p_state        string
-	c_area         string
-	c_e_weapon     int
-	c_e_armor      int
-	inventory      Inventory
-}
-
-type Weapon struct {
-	index   int
-	name    string
-	atk_mod int
-	s_mod   int
-	c_mod   int
-	agi_mod int
-	cost    int
-}
-
-type Armor struct {
-	index   int
-	name    string
-	atk_mod int
-	s_mod   int
-	c_mod   int
-	agi_mod int
-	cost    int
-}
 
 // func main() {
 	// userStats := Character{
@@ -152,35 +100,35 @@ func checkState(s string) (string, bool) {
 func createPlayer(username string, name string) (string, string, Character) {
 	//player creation
 
-	userStats := Character{
-		username:       username,
-		user:           name,
-		c_level:        1,
-		c_experience:   0,
-		c_health:       100,
-		m_health:       100,
-		b_health:       0,
-		s_strength:     10,
-		s_agility:      10,
-		s_constitution: 10,
-		s_intelligence: 10,
-		s_wisdom:       10,
-		w_s_sword:      0,
-		w_e_sword:      0,
-		w_s_axe:        0,
-		w_e_axe:        0,
-		w_s_spear:      0,
-		w_e_spear:      0,
-		p_state:        "normal",
-		c_area:         "town",
-		c_e_weapon:     0,
-		c_e_armor:      0,
-		inventory: Inventory{
-			i_apple:      1,
-			i_potion:     0,
-			i_potionPlus: 0,
-			c_gold:       0,
-			b_gold:       0,
+	userStats := models.Character{
+		Username:       username,
+		User:           name,
+		C_level:        1,
+		C_experience:   0,
+		C_health:       100,
+		M_health:       100,
+		B_health:       0,
+		S_strength:     10,
+		S_agility:      10,
+		S_constitution: 10,
+		S_intelligence: 10,
+		S_wisdom:       10,
+		W_s_sword:      0,
+		W_e_sword:      0,
+		W_s_axe:        0,
+		W_e_axe:        0,
+		W_s_spear:      0,
+		W_e_spear:      0,
+		P_state:        "normal",
+		C_area:         "town",
+		C_e_weapon:     0,
+		C_e_armor:      0,
+		Inventory: models.Inventory{
+			I_apple:      1,
+			I_potion:     0,
+			I_potionPlus: 0,
+			C_gold:       0,
+			B_gold:       0,
 		},
 	}
 
