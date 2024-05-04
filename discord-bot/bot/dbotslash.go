@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -31,46 +33,107 @@ func init() {
 }
 
 var (
-	integerOptionMinValue          = 1.0
-	dmPermission                   = false
-	defaultMemberPermissions int64 = discordgo.PermissionManageServer
+	integerOptionMinValue = 1.0
+	// dmPermission                   = false
+	// defaultMemberPermissions int64 = discordgo.PermissionManageServer
 
 	commands = []*discordgo.ApplicationCommand{
 		{
-			Name: "create",
-			// All commands and options must have a description
-			// Commands/options without description will fail the registration
-			// of the command.
-			Description: "Basic command",
+			// Command: Create - Create player character.
+			// Player States: Normal, Combat, Dead, Nil.
+			// Requires: character name.
+			// Returns: Flavor text.
+			Name:        "create",
+			Description: "Creates a new character with the given name.",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Name:        "name",
+					Description: "The name of your new character.",
+					Type:        discordgo.ApplicationCommandOptionString,
+					Required:    true,
+				},
+			},
 		},
 		{
+			// Command: Inventory - Show the player Inventory including items, stats, weapons, armor, name, xp.
+			// Player States: Normal, Combat, Dead.
+			// Requires: none.
+			// Optional: Action - Equip, Use
+			// Optional: Item
+			// Returns: Static text.
 			Name:        "inventory",
-			Description: "Opens and displays the player's inventory and stats.",
+			Description: "Can show your inventory.\nCan be used to equip items and gear.",
+			Options: []*discordgo.ApplicationCommandOption{
+				{
+					Name:        "action",
+					Description: "Equip or Use, Leave empty to inspect items or open inventory.",
+					Type:        discordgo.ApplicationCommandOptionString,
+					Required:    false,
+					Choices: []*discordgo.ApplicationCommandOptionChoice{
+						{
+							Name:  "equip",
+							Value: "equip",
+						},
+						{
+							Name:  "use",
+							Value: "use",
+						},
+					},
+				},
+				{
+					Type:        discordgo.ApplicationCommandOptionString,
+					Name:        "item",
+					Description: "The name of an item. Leave empty to unequip gear or open inventory.",
+					Required:    false,
+					Choices: []*discordgo.ApplicationCommandOptionChoice{
+						{
+							Name:  "apple",
+							Value: "apple",
+						},
+						{
+							Name:  "potion",
+							Value: "potion",
+						},
+						{
+							Name:  "potionPlus",
+							Value: "potionPlus",
+						},
+					},
+				},
+			},
 		},
 		{
+			// Command: Travel - Take the player to the location they specify.
+			// Player States: Normal.
+			// Requires: A choice from the discord bot's list of places.
+			// Returns: Flavor text.
 			Name:        "travel",
-			Description: "Takes the player to the location specified.",
+			Description: "Moves you to your desired location.",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
 					Name:        "location",
 					Description: "The place you want to go.",
-					Required:    true,
 					Type:        discordgo.ApplicationCommandOptionString,
+					Required:    true,
 					Choices: []*discordgo.ApplicationCommandOptionChoice{
 						{
-							Name:  "Plains",
+							Name:  "plains",
 							Value: "plains",
 						},
 						{
-							Name:  "Cave",
+							Name:  "cave",
 							Value: "cave",
 						},
 						{
-							Name:  "Town",
+							Name:  "forest",
+							Value: "forest",
+						},
+						{
+							Name:  "town",
 							Value: "town",
 						},
 						{
-							Name:  "Dungeon",
+							Name:  "dungeon",
 							Value: "dungeon",
 						},
 					},
@@ -78,46 +141,191 @@ var (
 			},
 		},
 		{
+			// Command: Search - Puts player into a fight with a static enemy depending on current location.
+			// Player State: Normal.
+			// Requires: none.
+			// Returns: Flavor text.
 			Name:        "search",
-			Description: "Looks for monsters to fight in the area.",
+			Description: "Searches the area for enemies to fight and loot to find.",
 		},
 		{
+			// Command: Attack: - Enacts one cycle in the current fight if the player is in is one.
+			// Player State: Combat.
+			// Requires: Attack-type.
+			// Returns: flavor text.
 			Name:        "attack",
-			Description: "Attacks a monster if the player is in battle. The Player has a variety of attacks they can use.",
+			Description: "Attacks the enemy.",
+		},
+		{
+			// Command: Store - Opens the store if the player is in the town.
+			// Optional: Buy and Sell.
+			// Optional: Item.
+			// Optional: number of items to buy/sell.
+			// Player State: Normal.
+			// Returns: flavor text.
+			Name:        "store",
+			Description: "Browses the store when in town.\nCan be used to buy and sell items.",
 			Options: []*discordgo.ApplicationCommandOption{
 				{
-					Name:        "attack-type",
-					Description: "The type of attack to be used against the monster.",
-					Required:    true,
+					Name:        "transaction-type",
+					Description: "Buy or sell an item. Leave emtpy to see available items.",
 					Type:        discordgo.ApplicationCommandOptionString,
 					Choices: []*discordgo.ApplicationCommandOptionChoice{
 						{
-							Name:  "Sword",
-							Value: "sword",
+							Name:  "buy",
+							Value: "buy",
 						},
 						{
-							Name:  "Polearm",
-							Value: "polearm",
-						},
-						{
-							Name:  "Bow",
-							Value: "bow",
-						},
-						{
-							Name:  "Magic",
-							Value: "magic",
+							Name:  "sell",
+							Value: "sell",
 						},
 					},
 				},
+				{
+					Name:        "item",
+					Description: "Buy or sell specified item. Leave emtpy to see available items.",
+					Type:        discordgo.ApplicationCommandOptionString,
+					Choices: []*discordgo.ApplicationCommandOptionChoice{
+						{
+							Name:  "apple",
+							Value: "apple",
+						},
+						{
+							Name:  "potion",
+							Value: "potion",
+						},
+						{
+							Name:  "potionPlus",
+							Value: "potionPlus",
+						},
+					},
+				},
+				{
+					Name:        "quantity",
+					Description: "Ammount of items being bought or sold.",
+					Type:        discordgo.ApplicationCommandOptionInteger,
+					MinValue:    &integerOptionMinValue,
+					MaxValue:    999999,
+				},
 			},
+		},
+		{
+			// Command: Cheatmode - Adds weapons armor potions and potions+ to the players inv for testing
+			// Requires: None.
+			// Returns: text.
+			// Player State: Normal, Combat.
+			Name:        "cheatmode",
+			Description: "Gives the player many items for testing purposes.",
 		},
 	}
 
 	commandHandlers = map[string]func(s *discordgo.Session, i *discordgo.InteractionCreate){
 		"create": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			// Grab user input from bot interaction
 			userId := i.Member.User.ID
-			resp, err := backendGameProcessorRequest("eoe_api.CreateCharacter", userId, "")
+			options := i.ApplicationCommandData().Options
+			name := options[0].StringValue()
+
+			// Create encore API request + error handling
+			resp, err := backendGameProcessorRequest("eoe_api.CreateCharacter", userId, name)
 			fmt.Printf("%+v\n", resp)
+
+			// return and format either error message or creation data
+			if err != nil {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "There has been an error with your request",
+					},
+				})
+			}
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: fmt.Sprintf(
+						`Player successfully created!
+						Character Name: %s
+						Chracter Level: %d 
+						Current Health: %d
+						`,
+						resp.P.User,
+						resp.P.C_level,
+						resp.P.C_health,
+					),
+				},
+			})
+		},
+		"inventory": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			// Grab user input from bot interaction
+			userId := i.Member.User.ID
+			options := i.ApplicationCommandData().Options
+			eoeMessage := ""
+			if len(options) == 2 {
+				eoeMessage = options[0].StringValue() + " " + options[1].StringValue()
+			} else if len(options) == 1 {
+				if options[0].StringValue() == "equip" || options[0].StringValue() == "use" {
+					eoeMessage = options[0].StringValue() + " _"
+				} else {
+					eoeMessage = "_ " + options[0].StringValue()
+				}
+			}
+
+			// Create encore API request + error handling
+			resp, err := backendGameProcessorRequest("eoe_api.Inventory", userId, eoeMessage)
+			fmt.Printf("%+v\n", resp)
+
+			if err != nil {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "There has been an error with your request",
+					},
+				})
+			}
+
+			// Determine and format type of response
+			var c []string
+			if len(options) == 0 {
+				c = []string{"You have opened your inventory:",
+					"\nName: ", resp.P.Username,
+					"\nCurrent State: ", resp.P.P_state,
+					"\nCurrent Area: ", resp.P.C_area,
+					"\nLevel: ", strconv.Itoa(resp.P.C_level),
+					"\nHealth: ", strconv.Itoa(resp.P.C_health+resp.P.B_health) + "/" + strconv.Itoa(resp.P.M_health),
+					"\nStrength: ", strconv.Itoa(resp.P.S_strength),
+					"\nAgility: ", strconv.Itoa(resp.P.S_agility),
+					"\nConstitution: ", strconv.Itoa(resp.P.S_constitution),
+					"\nIntelligence: ", strconv.Itoa(resp.P.S_intelligence),
+					"\nWisdom: ", strconv.Itoa(resp.P.S_wisdom),
+					"\nSword Proficiency Level: ", strconv.Itoa(resp.P.W_s_sword),
+					"\nAxe Proficiency Level: ", strconv.Itoa(resp.P.W_s_axe),
+					"\nSpear Proficiency Level: ", strconv.Itoa(resp.P.W_s_spear),
+					"\nApples: ", strconv.Itoa(resp.P.Inventory.I_apple),
+					"\nPotions: ", strconv.Itoa(resp.P.Inventory.I_potion),
+					"\nPotions Plus: ", strconv.Itoa(resp.P.Inventory.I_potionPlus),
+					"\nGold: ", strconv.Itoa(resp.P.Inventory.C_gold)}
+			} else {
+				c = []string{resp.TextGen}
+			}
+
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: strings.Join(c, ""),
+				},
+			})
+		},
+		"travel": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			// Grab user input from bot interaction
+			userId := i.Member.User.ID
+			options := i.ApplicationCommandData().Options
+			location := options[0].StringValue()
+
+			// Create encore API request + error handling
+			resp, err := backendGameProcessorRequest("eoe_api.Travel", userId, location)
+			fmt.Printf("%+v\n", resp)
+
+			// return and format either error message or creation data
 			if err != nil {
 				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -133,37 +341,123 @@ var (
 				},
 			})
 		},
-		"inventory": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Content: "You opened your inventory!",
-				},
-			})
-		},
-		"travel": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			options := i.ApplicationCommandData().Options
-			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-				Type: discordgo.InteractionResponseChannelMessageWithSource,
-				Data: &discordgo.InteractionResponseData{
-					Content: "You traveled to " + options[0].StringValue(),
-				},
-			})
-		},
 		"search": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			// Grab user input from bot interaction
+			userId := i.Member.User.ID
+
+			// Create encore API request + error handling
+			resp, err := backendGameProcessorRequest("eoe_api.Search", userId, "")
+			fmt.Printf("%+v\n", resp)
+
+			// return and format either error message or creation data
+			if err != nil {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "There has been an error with your request",
+					},
+				})
+			}
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: "You found a slime!",
+					Content: resp.TextGen,
 				},
 			})
 		},
 		"attack": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			options := i.ApplicationCommandData().Options
+			// Grab user input from bot interaction
+			userId := i.Member.User.ID
+
+			// Create encore API request + error handling
+			resp, err := backendGameProcessorRequest("eoe_api.Attack", userId, "")
+			fmt.Printf("%+v\n", resp)
+
+			// return and format either error message or creation data
+			if err != nil {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "There has been an error with your request",
+					},
+				})
+			}
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
-					Content: "You hit the monster with your " + options[0].StringValue(),
+					Content: resp.TextGen,
+				},
+			})
+		},
+		"store": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			// Grab user input from bot interaction
+			userId := i.Member.User.ID
+			options := i.ApplicationCommandData().Options
+			eoeMessage := ""
+			if len(options) == 3 {
+				eoeMessage = options[0].StringValue() + " " + options[1].StringValue() + " " + options[2].StringValue()
+			} else if len(options) == 2 {
+				eoeMessage = options[0].StringValue() + " " + options[1].StringValue() + " " + strconv.Itoa(1)
+			} else if len(options) == 1 {
+				if options[0].StringValue() == "buy" || options[0].StringValue() == "sell" {
+					eoeMessage = options[0].StringValue() + " _" + " _"
+				} else {
+					eoeMessage = "_ " + "_ " + options[0].StringValue()
+				}
+			}
+
+			// Create encore API request + error handling
+			resp, err := backendGameProcessorRequest("eoe_api.Store", userId, eoeMessage)
+			fmt.Printf("%+v\n", resp)
+
+			if err != nil {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "There has been an error with your request",
+					},
+				})
+			}
+
+			// Determine and format type of response
+			var c []string
+			if len(options) == 0 {
+				c = []string{"Here's what we have in stock: ",
+					"\nApples | Cost: 1 gold",
+					"\nPotions | Cost: 5 gold",
+					"\nPotions Plus | Cost: 10 gold"}
+			} else {
+				c = []string{resp.TextGen}
+			}
+
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: strings.Join(c, ""),
+				},
+			})
+		},
+		"cheatmode": func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+			// Grab user input from bot interaction
+			userId := i.Member.User.ID
+
+			// Create encore API request + error handling
+			resp, err := backendGameProcessorRequest("eoe_api.Cheatmode", userId, "")
+			fmt.Printf("%+v\n", resp)
+
+			// return and format either error message or creation data
+			if err != nil {
+				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "There has been an error with your request",
+					},
+				})
+			}
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: resp.TextGen,
 				},
 			})
 		},
