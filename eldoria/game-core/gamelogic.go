@@ -1,4 +1,4 @@
-package main
+package gamelogic
 
 import (
 	"encoding/json"
@@ -87,41 +87,41 @@ type Armor struct {
 	cost    int
 }
 
-func main() {
-	userStats := Character{
-		username:       "username",
-		user:           "name",
-		c_level:        1,
-		c_experience:   0,
-		c_health:       100,
-		m_health:       100,
-		b_health:       0,
-		s_strength:     10,
-		s_agility:      10,
-		s_constitution: 10,
-		s_intelligence: 10,
-		s_wisdom:       10,
-		w_s_sword:      0,
-		w_e_sword:      0,
-		w_s_axe:        0,
-		w_e_axe:        0,
-		w_s_spear:      0,
-		w_e_spear:      0,
-		p_state:        "normal",
-		c_area:         "town",
-		c_e_weapon:     0,
-		c_e_armor:      0,
-		inventory: Inventory{
-			i_apple:      1,
-			i_potion:     0,
-			i_potionPlus: 0,
-			c_gold:       0,
-			b_gold:       0,
-		},
-	}
-
-	printCharacter(&userStats)
-}
+// func main() {
+	// userStats := Character{
+		// username:       "username",
+		// user:           "name",
+		// c_level:        1,
+		// c_experience:   0,
+		// c_health:       100,
+		// m_health:       100,
+		// b_health:       0,
+		// s_strength:     10,
+		// s_agility:      10,
+		// s_constitution: 10,
+		// s_intelligence: 10,
+		// s_wisdom:       10,
+		// w_s_sword:      0,
+		// w_e_sword:      0,
+		// w_s_axe:        0,
+		// w_e_axe:        0,
+		// w_s_spear:      0,
+		// w_e_spear:      0,
+		// p_state:        "normal",
+		// c_area:         "town",
+		// c_e_weapon:     0,
+		// c_e_armor:      0,
+		// inventory: Inventory{
+			// i_apple:      1,
+			// i_potion:     0,
+			// i_potionPlus: 0,
+			// c_gold:       0,
+			// b_gold:       0,
+		// },
+	// }
+// 
+	// printCharacter(&userStats)
+// }
 
 func printCharacter(pc *Character) {
 	str, _ := json.MarshalIndent(pc, "", "\t")
@@ -228,10 +228,10 @@ func getStatus(pc *Character, command string) (string, string) {
 	switch noun := args[1]; noun {
 	case "health":
 		fmt.Println("you checked your health!")
-		message := "your current HP is: " + c_health + " + (" + b_health + " bonus hp)/" + m_health
+		message = "your current HP is: " + c_health + " + (" + b_health + " bonus hp)/" + m_health
 	case "stats":
 		fmt.Println("you checked your stats!")
-		message := "current stats: Strength:" + strength + " Agility: " + agility + " Constitution: " + constitution + " Intelligence: " + intelligence + " Wisdom: " + wisdom
+		message = "current stats: Strength:" + strength + " Agility: " + agility + " Constitution: " + constitution + " Intelligence: " + intelligence + " Wisdom: " + wisdom
 	default:
 		fmt.Println("you didn't check anything!")
 	}
@@ -371,7 +371,6 @@ func inventory(pc *Character, command string) (string, string) {
 	args := strings.Fields(command)
 	prompt := " - "
 	message := " - "
-	amount, e1 := strconv.Atoi(args[3])
 
 	apples := strconv.Itoa(pc.inventory.i_apple)
 	potion := strconv.Itoa(pc.inventory.i_potion)
@@ -380,8 +379,8 @@ func inventory(pc *Character, command string) (string, string) {
 	if len(args) == 1 {
 		fmt.Println("Inventory check")
 		contents := "Bag:\nApples: " + apples + "\nPotions: " + potion + "\nPlusPotions: " + potionPlus
-		message := "you check your inventory" + contents
-		prompt := "You look inside your bag. \n" + contents
+		message = "you check your inventory" + contents
+		prompt = "You look inside your bag. \n" + contents
 	}
 
 	if len(args) == 2 && args[1] == "use" {
@@ -393,8 +392,8 @@ func inventory(pc *Character, command string) (string, string) {
 			return "not enough arguments", "You look at your empty hands, unsure of what you were trying to do."
 		}
 
-		prompt := "You use a " + args[2]
-		message := "Used item: " + args[1]
+		prompt = "You use a " + args[2]
+		message = "Used item: " + args[1]
 
 		fmt.Printf("Fields are: %q", args)
 
