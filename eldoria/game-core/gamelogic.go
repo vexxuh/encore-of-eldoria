@@ -2,10 +2,11 @@ package gamecore
 
 import (
 	"encoding/json"
+	models "encore.app/eldoria/game-core/data"
 	"fmt"
 	"strconv"
 	"strings"
-	models "encore.app/eldoria/gamecore/data" 
+	"slices"
 )
 
 // https://www.geeksforgeeks.org/nested-structure-in-golang/
@@ -34,42 +35,42 @@ import (
 //gold in inventory
 //gold in bank
 
+func main() {
+	userStats := Character{
+		Inventory: Inventory{
+			I_apple:      1,
+			I_potion:     0,
+			I_potionPlus: 0,
+			C_gold:       0,
+			B_gold:       0,
+		},
+		InventoryId:    1,
+		Username:       "username",
+		User:           "name",
+		C_level:        1,
+		C_experience:   0,
+		C_health:       100,
+		M_health:       100,
+		B_health:       0,
+		S_strength:     10,
+		S_agility:      10,
+		S_constitution: 10,
+		S_intelligence: 10,
+		S_wisdom:       10,
+		W_s_sword:      0,
+		W_e_sword:      0,
+		W_s_axe:        0,
+		W_e_axe:        0,
+		W_s_spear:      0,
+		W_e_spear:      0,
+		P_state:        "normal",
+		C_area:         "town",
+		C_e_weapon:     0,
+		C_e_armor:      0,
+	}
 
-// func main() {
-	// userStats := Character{
-		// username:       "username",
-		// user:           "name",
-		// c_level:        1,
-		// c_experience:   0,
-		// c_health:       100,
-		// m_health:       100,
-		// b_health:       0,
-		// s_strength:     10,
-		// s_agility:      10,
-		// s_constitution: 10,
-		// s_intelligence: 10,
-		// s_wisdom:       10,
-		// w_s_sword:      0,
-		// w_e_sword:      0,
-		// w_s_axe:        0,
-		// w_e_axe:        0,
-		// w_s_spear:      0,
-		// w_e_spear:      0,
-		// p_state:        "normal",
-		// c_area:         "town",
-		// c_e_weapon:     0,
-		// c_e_armor:      0,
-		// inventory: Inventory{
-			// i_apple:      1,
-			// i_potion:     0,
-			// i_potionPlus: 0,
-			// c_gold:       0,
-			// b_gold:       0,
-		// },
-	// }
-// 
-	// printCharacter(&userStats)
-// }
+	printCharacter(&userStats)
+}
 
 func printCharacter(pc *Character) {
 	str, _ := json.MarshalIndent(pc, "", "\t")
@@ -172,7 +173,7 @@ func getStatus(pc *Character, command string) (string, string) {
 	b_health := strconv.Itoa(pc.b_health)
 	m_health := strconv.Itoa(pc.m_health)
 	message := "Get status: " + pc.username
-	
+
 	switch noun := args[1]; noun {
 	case "health":
 		fmt.Println("you checked your health!")
@@ -258,6 +259,11 @@ func store(pc *Character, command string) (string, string) {
 		- complete the transaction and notify the player
 	*/
 
+	i1 := []string{"apple", "potion", "plus potion"}
+    i2 := []int{5, 50, 100}
+	items := ""
+	amount:= 0
+
 	msg, pass := checkState(pc.p_state)
 
 	if pass == false {
@@ -266,26 +272,70 @@ func store(pc *Character, command string) (string, string) {
 	}
 
 	args := strings.Fields(command)
-	if len(args) < 3 {
-		fmt.Println("not enough arguments")
-		return "not enough arguments", "The shopkeeper looks bored with your window shopping."
+
+	// if just 'store' command, show items for sale
+	if len(args) == 1 {
+		fmt.Println("list items")
+		items := ""
+		
+		// Print store items
+		for i := range i1 {
+            fmt.Println(i1[i])
+            fmt.Println(i2[i])
+            items = items + i1[i] + " for " + strconv.Itoa(i2[i]) + "gp\n"
+           }
+		return "list of items requested", "'Welcome!' says the shopkeeper.  'Take a look around and let me know what you would like to buy!'" + items
 	}
 
 	verb := args[1]
 	item := args[2]
+
 	amount, e1 := strconv.Atoi(args[3])
 
 	if e1 == nil {
 		fmt.Printf("%T \n %v", amount, amount)
 		amount = 1
+	}
+
+	// find the index for the requested item
+	var itemIndex int = -1
+	for i, item := range i1 {
+		if item == i1[i] {
+		itemIndex = i
+		break
+		}
+	}
+
+	
+
+	switch verb {
+	case "buy":
+		fmt.Println("Buying")
+
+		if itemIndex == -1 {
+			return "item does not exist", "'I don't think we have any of that.' says the shopkeeper"
+		}
+
+		if amount * i2[itemIndex] > pc.inventory.c_gold {
+			return "not enough gold", "The shopkeeper says 'Sorry guy, it looks like you don't have enough gold for that.'"
+		}
+
+		pc.inventory.c_gold = pc.inventory.c_gold - amount * i2[itemIndex]
+
+		switch itemIndex {
+		case 1:
+			pc.inventory.i_apple = pc.inventory.i_apple + amount
+		case 2:
+			pc.inventory.i_potion = pc.inventory.i_potion + amount
+		case 3:
+			pc.inventory.i_potionPlus = pc.inventory.i_potionPlus + amount
+		}
 
 	}
 
-	// if just 'store' command, show items for sale
 
-	switch verb := args[1]; verb {
-	case "buy":
-		fmt.Println("Buying")
+
+
 	case "sell":
 		fmt.Println("Selling")
 	case "info":
@@ -299,6 +349,7 @@ func store(pc *Character, command string) (string, string) {
 
 	return message, prompt
 }
+
 
 func cheatMode(pc *Character, command string) (string, string) {
 	fmt.Println("Cheat items added")
