@@ -5,10 +5,11 @@ import "gorm.io/gorm"
 type Character struct {
 	gorm.Model
 	Inventory      Inventory `gorm:"foreignKey:IventoryId"`
-	IventoryId	   int
+	InventoryId	   int
 	Username       string
 	User           string
 	C_level        int
+	C_experience   int
 	C_health       int
 	M_health       int
 	B_health       int
@@ -18,8 +19,11 @@ type Character struct {
 	S_intelligence int
 	S_wisdom       int
 	W_s_sword      int
+	W_e_sword      int
 	W_s_axe        int
+	W_e_axe        int
 	W_s_spear      int
+	W_e_spear      int
 	P_state        string
 	C_area         string
 	C_e_weapon     int
