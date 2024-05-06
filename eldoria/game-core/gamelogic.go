@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"errors"
-	"math"
 	"math/rand/v2"
 )
 
@@ -538,7 +537,7 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 	c6 := []int{	15,		25,			35,		35,			40,			45,			70,		40,			80,					70,			80,		100}
 	c7 := []int{	2, 		4,			6,		10,			7,			5,			20,		10,			18,					12,			15,		30}
 	c8 := []int{	2, 		3,			5,		7,			7,			5,			15,		12,			20,					7,			18,		25}
-	c9 := []string{"plains", "plains", "plains", "forest", "forest",	"forest",	"cave",	"cave",		"cave",				"dungeon",	"dungeon","dungeon"}
+	//c9 := []string{"plains", "plains", "plains", "forest", "forest",	"forest",	"cave",	"cave",		"cave",				"dungeon",	"dungeon","dungeon"}
 
 /*
 	C_name       string
@@ -629,7 +628,7 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 		pCrit := false
 		pAttackRoll := rand.IntN(20) + 1
 		pResult := "you missed"
-		pReward := float64(0)
+		pReward := 0.0
 		
 		cSuccess := false
 		cCrit := false
@@ -638,63 +637,65 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 
 		combatComplete := false
 
-		pAttackMod := float64((float64(pc.C_level) - float64(pc.Creature.C_level) * 0.03 ) * 100)
+		pAttackMod := float64(pc.C_level) - (float64(pc.Creature.C_level) * 0.03) * 100
 		// (difference in levels * 3%) + (difference in pc agility to creature speed * 3%) + ()
 
-		cAttackMod := float64((float64(pc.Creature.C_level) - float64(pc.C_level) * 0.03 ) * 100)
+		cAttackMod := float64(pc.Creature.C_level) - (float64(pc.C_level) * 0.03 ) * 100
 		// (difference in levels * 3%) + (difference in pc agility to creature speed * 3%) + ()
 
 
-		pDamage := rand.IntN(100)+1 / 100 * pc.S_strength  - pc.Creature.C_defense
+		pDamage := (rand.Float64() * 100) * float64(pc.S_strength)  - float64(pc.Creature.C_defense)
 		// strength + weapon damage * 1-100% - creature defense 
 
 		if pAttackMod < 0 {
 			pAttackMod = 0
 		}
 
-		cDamage := float64(rand.IntN(100)+1 / 100 * float64(pc.Creature.C_attack) - float64(pc.S_constitution) * float64(rand.IntN(100)) / 100)
+		cDamage := (rand.Float64() * 100) * float64(pc.Creature.C_attack) - float64(pc.S_constitution) * (rand.Float64())
 		// strength + weapon damage * 1-100% - creature defense 
 
 		if pAttackMod < 0 {
 			pAttackMod = 0
 		}
 
-		if math.Floor((pAttackRoll / 20 * 100) + pAttackMod) > 50 {
+		if ((float64(pAttackRoll) / 20 * 100) + pAttackMod) > 50 {
 			pSuccess = true
 		} 
 
 		if pAttackRoll == 20 {
 			pSuccess = true
 			pCrit = true
-			pDamage = pc.S_strength * 1.2
+			pDamage = float64(pc.S_strength) * 1.2
 		}
+			fmt.Println("Player critical hit: " + strconv.FormatBool(pCrit))
 
-		if math.Floor((cAttackRoll / 20 * 100) + cAttackMod) > 50 {
+		if ((float64(cAttackRoll) / 20 * 100) + cAttackMod) > 50 {
 			cSuccess = true
 		} 
 
 		if cAttackRoll == 20 {
 			cSuccess = true
 			cCrit = true
-			cDamage = math.Ceil(float64(pc.Creature.C_attack * 1.2))
+			cDamage = float64(pc.Creature.C_attack) * 1.2
 		}
+			fmt.Println("Creature critical hit: " + strconv.FormatBool(cCrit))
 
 		if pSuccess {
-			pc.Creature.C_c_health = pc.Creature.C_c_health - pDamage
-			pResult = "you hit for " + strconv.Itoa(pDamage)
+			pc.Creature.C_c_health = pc.Creature.C_c_health - int(pDamage)
+			pResult = "you hit for " + strconv.Itoa(int(pDamage))
 		}
 
 		if pc.Creature.C_c_health < 1 {
 			combatComplete = true
-			pReward = math.Floor(pc.Creature.C_level * (rand.IntN(20) + 1 / 100 ))
-			pResult = pResult + "\nYou slayed the creature! You collected enough resources to earn " + strconv.Itoa(pReward) + " gold."
+			pReward = float64(pc.Creature.C_level) * (rand.Float64() * .2 )
+			pResult = pResult + "\nYou slayed the creature! You collected enough resources to earn " + strconv.Itoa(int(pReward)) + " gold."
 			cResult = ""
-			pc.Inventory.C_gold = pc.Inventory.C_gold + pReward
+			pc.Inventory.C_gold = pc.Inventory.C_gold + int(pReward)
 		}
 
 		if combatComplete == false && cSuccess == true {
-			pc.C_health = pc.C_health - cDamage
-			cResult = "the creature hits for " + strconv.Itoa(cDamage)
+			pc.C_health = pc.C_health - int(cDamage)
+			cResult = "the creature hits for " + strconv.Itoa(int(cDamage))
 		}
 
 		if pc.C_health < 1 {
