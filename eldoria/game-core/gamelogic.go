@@ -34,8 +34,10 @@ import (
 //gold in inventory
 //gold in bank
 
+
+/*
 func main() {
-	userStats := models.Character{
+	 userStats := models.Character{
 		Inventory: models.Inventory{
 			I_apple:      1,
 			I_potion:     0,
@@ -53,9 +55,9 @@ func main() {
 			C_m_health:		0,
 			C_attack:		0,
 			C_defense:		0,
-
-		},
-
+ 
+		 },
+ 
 		Weapon: models.Weapon{
 			I_name:    		"Fists",
 			I_id:     		0,
@@ -105,32 +107,33 @@ func main() {
 
 
 	printCharacter(&userStats)
-// 	msg1, msg2 := " ", " "
-// 	msg1, _ = checkState(userStats.P_state)
-// 	fmt.Println(msg1)
-// 	msg1, msg2, _ = getStatus(&userStats, "check status")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	msg1, msg2, _ = getStatus(&userStats, "check health")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	msg1, msg2, _ = MoveArea(&userStats, "move town")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	msg1, msg2, _ = Store(&userStats, "store buy apple")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	printCharacter(&userStats)
-// 	msg1, msg2, _ = Store(&userStats, "store sell apple")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	printCharacter(&userStats)
-// 	msg1, msg2, _ = CheatMode(&userStats, "cheat mode")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	msg1, msg2, _ = Inventory(&userStats, "inventory")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	printCharacter(&userStats)
-// 	msg1, msg2, _ = Inventory(&userStats, "inventory use apple")
-// 	fmt.Println(msg1); fmt.Println(msg2)
-// 	printCharacter(&userStats)
+	msg1, msg2 := " ", " "
+	msg1, _ = checkState(userStats.P_state)
+	fmt.Println(msg1)
+	msg1, msg2, _ = getStatus(&userStats, "check status")
+	fmt.Println(msg1); fmt.Println(msg2)
+	msg1, msg2, _ = getStatus(&userStats, "check health")
+	fmt.Println(msg1); fmt.Println(msg2)
+	msg1, msg2, _ = MoveArea(&userStats, "move town")
+	fmt.Println(msg1); fmt.Println(msg2)
+	msg1, msg2, _ = Store(&userStats, "store buy apple")
+	fmt.Println(msg1); fmt.Println(msg2)
+	printCharacter(&userStats)
+	msg1, msg2, _ = Store(&userStats, "store sell apple")
+	fmt.Println(msg1); fmt.Println(msg2)
+	printCharacter(&userStats)
+	msg1, msg2, _ = CheatMode(&userStats, "cheat mode")
+	fmt.Println(msg1); fmt.Println(msg2)
+	msg1, msg2, _ = Inventory(&userStats, "inventory")
+	fmt.Println(msg1); fmt.Println(msg2)
+	printCharacter(&userStats)
+	msg1, msg2, _ = Inventory(&userStats, "inventory use apple")
+	fmt.Println(msg1); fmt.Println(msg2)
+	printCharacter(&userStats)
 
 }
 
+*/
 
 func printCharacter(pc *models.Character) {
 	str, _ := json.MarshalIndent(pc, "", "\t")
