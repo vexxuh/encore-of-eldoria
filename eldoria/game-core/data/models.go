@@ -4,10 +4,12 @@ import "gorm.io/gorm"
 
 type Character struct {
 	gorm.Model
-	Inventory      Inventory `gorm:"foreignKey:IventoryId"`
+	Inventory      Inventory	`gorm:"foreignKey:IventoryId"`
 	InventoryId	   int
-	Creature	   Creature `gorm:"foreignKey:CreatureId"`
+	Creature	   Creature		`gorm:"foreignKey:CreatureId"`
 	CreatureId	   int
+	Weapon			Weapon		`gorm:"foreignKey:WeaponId"`
+	Armor			Armor		`gorm:"foreignKey:ArmorId"`
 	Username       string
 	User           string
 	C_level        int
@@ -20,6 +22,8 @@ type Character struct {
 	S_constitution int
 	S_intelligence int
 	S_wisdom       int
+	W_s_melee	   int
+	W_e_melee	   int
 	W_s_sword      int
 	W_e_sword      int
 	W_s_axe        int
@@ -52,4 +56,28 @@ type Creature struct {
 	C_attack     int
 	C_defense    int
 
+}
+
+type Weapon struct {
+	gorm.Model
+	I_name     		string
+	I_id     		int
+	I_attack   		int
+	I_strength 		int
+	I_defense  		int
+	I_agility		int
+	I_constitution  int
+	I_type     	 	string
+}
+
+type Armor struct {
+	gorm.Model
+	I_name     		string
+	I_id     		int
+	I_attack   		int
+	I_strength 		int
+	I_defense  		int
+	I_agility		int
+	I_constitution  int
+	I_type     	 	string
 }
