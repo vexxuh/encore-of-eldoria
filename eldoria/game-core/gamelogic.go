@@ -34,52 +34,77 @@ import (
 //gold in inventory
 //gold in bank
 
-// func main() {
-// 	userStats := models.Character{
-// 		Inventory: models.Inventory{
-// 			I_apple:      1,
-// 			I_potion:     0,
-// 			I_potionPlus: 0,
-// 			C_gold:       0,
-// 			B_gold:       0,
-// 		},
-// 		Creature:	models.Creature{
-// 			C_name:       "none",
-// 			C_id:     	 1,
-// 			C_level:     1,
-// 			C_experience: 0,
-// 			C_c_health:	  0,
-// 			C_m_health:   0,
-// 			C_attack:     0,
-// 			C_defense:    0,
+func main() {
+	userStats := models.Character{
+		Inventory: models.Inventory{
+			I_apple:      1,
+			I_potion:     0,
+			I_potionPlus: 0,
+			C_gold:       0,
+			B_gold:       0,
+		},
 
-// 		},
-// 		InventoryId:    1,
-// 		Username:       "username",
-// 		User:           "name",
-// 		C_level:        1,
-// 		C_experience:   0,
-// 		C_health:       100,
-// 		M_health:       100,
-// 		B_health:       0,
-// 		S_strength:     10,
-// 		S_agility:      10,
-// 		S_constitution: 10,
-// 		S_intelligence: 10,
-// 		S_wisdom:       10,
-// 		W_s_sword:      0,
-// 		W_e_sword:      0,
-// 		W_s_axe:        0,
-// 		W_e_axe:        0,
-// 		W_s_spear:      0,
-// 		W_e_spear:      0,
-// 		P_state:        "normal",
-// 		C_area:         "town",
-// 		C_e_weapon:     0,
-// 		C_e_armor:      0,
-// 	}
+		Creature:	models.Creature{
+			C_name:       "none",
+			C_id:			1,
+			C_level:		1,
+			C_experience:	0,
+			C_c_health:		0,
+			C_m_health:		0,
+			C_attack:		0,
+			C_defense:		0,
 
-// 	printCharacter(&userStats)
+		},
+
+		Weapon: models.Weapon{
+			I_name:    		"Fists",
+			I_id:     		0,
+			I_attack:  		0,
+			I_strength:		0,
+			I_defense: 		0,
+			I_agility:		0,
+			I_constitution: 0,
+			I_type:      	"melee",
+		},
+
+		Armor: models.Armor{
+			I_name:    		"None",
+			I_id:     		0,
+			I_attack:  		0,
+			I_strength:		0,
+			I_defense: 		0,
+			I_agility:		0,
+			I_constitution: 0,
+			I_type:      	"normal",
+		},
+
+		InventoryId:    1,
+		Username:       "username",
+		User:           "name",
+		C_level:        1,
+		C_experience:   0,
+		C_health:       100,
+		M_health:       100,
+		B_health:       0,
+		S_strength:     10,
+		S_agility:      10,
+		S_constitution: 10,
+		S_intelligence: 10,
+		S_wisdom:       10,
+		W_s_sword:      0,
+		W_e_sword:      0,
+		W_s_axe:        0,
+		W_e_axe:        0,
+		W_s_spear:      0,
+		W_e_spear:      0,
+		P_state:        "normal",
+		C_area:         "town",
+		C_e_weapon:     0,
+		C_e_armor:      0,
+	}
+
+
+	printCharacter(&userStats)
 // 	msg1, msg2 := " ", " "
 // 	msg1, _ = checkState(userStats.P_state)
 // 	fmt.Println(msg1)
@@ -103,7 +128,8 @@ import (
 // 	msg1, msg2, _ = Inventory(&userStats, "inventory use apple")
 // 	fmt.Println(msg1); fmt.Println(msg2)
 // 	printCharacter(&userStats)
-// }
+
+}
 
 
 func printCharacter(pc *models.Character) {
@@ -173,6 +199,8 @@ if pc != nil {
 		S_constitution: 10,
 		S_intelligence: 10,
 		S_wisdom:       10,
+		W_s_melee:		0,
+		W_e_melee:		0,
 		W_s_sword:      0,
 		W_e_sword:      0,
 		W_s_axe:        0,
@@ -190,7 +218,29 @@ if pc != nil {
 			C_gold:       0,
 			B_gold:       0,
 		},
+		Weapon: models.Weapon{
+			I_name:    		"Fists",
+			I_id:     		0,
+			I_attack:  		0,
+			I_strength:		0,
+			I_defense: 		0,
+			I_agility:		0,
+			I_constitution: 0,
+			I_type:      	"melee",
+		},
+		Armor: models.Armor{
+			I_name:    		"None",
+			I_id:     		0,
+			I_attack:  		0,
+			I_strength:		0,
+			I_defense: 		0,
+			I_agility:		0,
+			I_constitution: 0,
+			I_type:      	"normal",
+		},
+
 	}
+
 
 	fmt.Printf("%+v\n", userStats)
 
@@ -322,6 +372,12 @@ func Store(pc *models.Character, command string) (string, string, error) {
 	i1 := []string{"apple", "potion", "plus_potion"}
     i2 := []int{5, 50, 100}
     i3 := []int{2, 25, 50}
+
+	// i1 := []string{"apple", "potion", "plus_potion", "dagger", "sword", "leather_armor", "iron_armor"}	// item name
+    // i2 := []int{5, 50, 100, 20, 40, 20, 40}																// item cost
+    // i3 := []int{2, 25, 50, 0, 0, 0, 0}																	// heal amount
+    // i4 := []string{"item","item","item","weapon","weapon","armor","armor"}								// item type
+    // i5 := []int{0, 0, 0, 1, 2, 1, 2}																	// item index
 
 	items := ""
 
@@ -620,7 +676,7 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 	}
 
 	if len(args) == 3 && args[1] == "attack" {
-		weapon := "Ya' Mitts"
+		weapon := pc.Weapon.I_name
 
 		fmt.Println("Combat: attacking with " + weapon)
 
@@ -644,7 +700,7 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 		// (difference in levels * 3%) + (difference in pc agility to creature speed * 3%) + ()
 
 
-		pDamage := (rand.Float64() * 100) * float64(pc.S_strength)  - float64(pc.Creature.C_defense)
+		pDamage := (rand.Float64() * 100) * float64(pc.S_strength) - float64(pc.Creature.C_defense)
 		// strength + weapon damage * 1-100% - creature defense 
 
 		if pAttackMod < 0 {
@@ -688,9 +744,11 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 		if pc.Creature.C_c_health < 1 {
 			combatComplete = true
 			pReward = float64(pc.Creature.C_level) * (rand.Float64() * .2 )
-			pResult = pResult + "\nYou slayed the creature! You collected enough resources to earn " + strconv.Itoa(int(pReward)) + " gold."
+			pExp := pc.Creature.C_level + int( float64(pc.Creature.C_level) * 2.2 )
+			pResult = pResult + "\nYou slayed the creature! You collected enough resources to earn " + strconv.Itoa(int(pReward)) + " gold. You collected " + strconv.Itoa(pExp) + " XP."
 			cResult = ""
 			pc.Inventory.C_gold = pc.Inventory.C_gold + int(pReward)
+			pc.C_experience = pc.C_experience + pExp
 		}
 
 		if combatComplete == false && cSuccess == true {
@@ -701,6 +759,18 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 		if pc.C_health < 1 {
 			pc.P_state = "dead"
 			cResult = cResult + "\nyou were slain."
+		}
+
+		if pc.C_experience > pc.C_experience * pc.C_level {
+			pc.C_level = pc.C_level + 1
+			pc.M_health = 100 + (20 * pc.C_level)
+			pc.C_health = pc.M_health
+			pc.S_strength = pc.S_strength + ( 10 * pc.C_level )   
+			pc.S_agility = pc.S_agility + ( 10 * pc.C_level )
+			pc.S_constitution = pc.S_constitution + ( 10 * pc.C_level )
+			pc.S_intelligence = pc.S_intelligence + ( 10 * pc.C_level )
+			pc.S_wisdom =  pc.S_wisdom + ( 10 * pc.C_level )
+			pResult = pResult + "\nYou gained enough experince to level up! You are now level " + strconv.Itoa(pc.C_level)
 		}
 
 		return pResult + "\n" + cResult, pResult + "\n" + cResult, nil
