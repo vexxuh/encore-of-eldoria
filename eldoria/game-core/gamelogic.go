@@ -34,76 +34,76 @@ import (
 //gold in inventory
 //gold in bank
 
-func main() {
-	userStats := models.Character{
-		Inventory: models.Inventory{
-			I_apple:      1,
-			I_potion:     0,
-			I_potionPlus: 0,
-			C_gold:       0,
-			B_gold:       0,
-		},
-		Creature:	models.Creature{
-			C_name:       "none",
-			C_id:     	 1,
-			C_level:     1,
-			C_experience: 0,
-			C_c_health:	  0,
-			C_m_health:   0,
-			C_attack:     0,
-			C_defense:    0,
+// func main() {
+// 	userStats := models.Character{
+// 		Inventory: models.Inventory{
+// 			I_apple:      1,
+// 			I_potion:     0,
+// 			I_potionPlus: 0,
+// 			C_gold:       0,
+// 			B_gold:       0,
+// 		},
+// 		Creature:	models.Creature{
+// 			C_name:       "none",
+// 			C_id:     	 1,
+// 			C_level:     1,
+// 			C_experience: 0,
+// 			C_c_health:	  0,
+// 			C_m_health:   0,
+// 			C_attack:     0,
+// 			C_defense:    0,
 
-		},
-		InventoryId:    1,
-		Username:       "username",
-		User:           "name",
-		C_level:        1,
-		C_experience:   0,
-		C_health:       100,
-		M_health:       100,
-		B_health:       0,
-		S_strength:     10,
-		S_agility:      10,
-		S_constitution: 10,
-		S_intelligence: 10,
-		S_wisdom:       10,
-		W_s_sword:      0,
-		W_e_sword:      0,
-		W_s_axe:        0,
-		W_e_axe:        0,
-		W_s_spear:      0,
-		W_e_spear:      0,
-		P_state:        "normal",
-		C_area:         "town",
-		C_e_weapon:     0,
-		C_e_armor:      0,
-	}
+// 		},
+// 		InventoryId:    1,
+// 		Username:       "username",
+// 		User:           "name",
+// 		C_level:        1,
+// 		C_experience:   0,
+// 		C_health:       100,
+// 		M_health:       100,
+// 		B_health:       0,
+// 		S_strength:     10,
+// 		S_agility:      10,
+// 		S_constitution: 10,
+// 		S_intelligence: 10,
+// 		S_wisdom:       10,
+// 		W_s_sword:      0,
+// 		W_e_sword:      0,
+// 		W_s_axe:        0,
+// 		W_e_axe:        0,
+// 		W_s_spear:      0,
+// 		W_e_spear:      0,
+// 		P_state:        "normal",
+// 		C_area:         "town",
+// 		C_e_weapon:     0,
+// 		C_e_armor:      0,
+// 	}
 
-	printCharacter(&userStats)
-	msg1, msg2 := " ", " "
-	msg1, _ = checkState(userStats.P_state)
-	fmt.Println(msg1)
-	msg1, msg2, _ = getStatus(&userStats, "check status")
-	fmt.Println(msg1); fmt.Println(msg2)
-	msg1, msg2, _ = getStatus(&userStats, "check health")
-	fmt.Println(msg1); fmt.Println(msg2)
-	msg1, msg2, _ = MoveArea(&userStats, "move town")
-	fmt.Println(msg1); fmt.Println(msg2)
-	msg1, msg2, _ = Store(&userStats, "store buy apple")
-	fmt.Println(msg1); fmt.Println(msg2)
-	printCharacter(&userStats)
-	msg1, msg2, _ = Store(&userStats, "store sell apple")
-	fmt.Println(msg1); fmt.Println(msg2)
-	printCharacter(&userStats)
-	msg1, msg2, _ = CheatMode(&userStats, "cheat mode")
-	fmt.Println(msg1); fmt.Println(msg2)
-	msg1, msg2, _ = Inventory(&userStats, "inventory")
-	fmt.Println(msg1); fmt.Println(msg2)
-	printCharacter(&userStats)
-	msg1, msg2, _ = Inventory(&userStats, "inventory use apple")
-	fmt.Println(msg1); fmt.Println(msg2)
-	printCharacter(&userStats)
-}
+// 	printCharacter(&userStats)
+// 	msg1, msg2 := " ", " "
+// 	msg1, _ = checkState(userStats.P_state)
+// 	fmt.Println(msg1)
+// 	msg1, msg2, _ = getStatus(&userStats, "check status")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	msg1, msg2, _ = getStatus(&userStats, "check health")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	msg1, msg2, _ = MoveArea(&userStats, "move town")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	msg1, msg2, _ = Store(&userStats, "store buy apple")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	printCharacter(&userStats)
+// 	msg1, msg2, _ = Store(&userStats, "store sell apple")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	printCharacter(&userStats)
+// 	msg1, msg2, _ = CheatMode(&userStats, "cheat mode")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	msg1, msg2, _ = Inventory(&userStats, "inventory")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	printCharacter(&userStats)
+// 	msg1, msg2, _ = Inventory(&userStats, "inventory use apple")
+// 	fmt.Println(msg1); fmt.Println(msg2)
+// 	printCharacter(&userStats)
+// }
 
 
 func printCharacter(pc *models.Character) {
