@@ -6,6 +6,8 @@ type Character struct {
 	gorm.Model
 	Inventory      Inventory `gorm:"foreignKey:IventoryId"`
 	InventoryId	   int
+	Creature	   Creature `gorm:"foreignKey:CreatureId"`
+	CreatureId	   int
 	Username       string
 	User           string
 	C_level        int
@@ -37,4 +39,17 @@ type Inventory struct {
 	I_potionPlus int
 	C_gold       int
 	B_gold       int
+}
+
+type Creature struct {
+	gorm.Model
+	C_name       string
+	C_id     	 int
+	C_level      int
+	C_experience int
+	C_c_health	 int
+	C_m_health   int
+	C_attack     int
+	C_defense    int
+
 }
