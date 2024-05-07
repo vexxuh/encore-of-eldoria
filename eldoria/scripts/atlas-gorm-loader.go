@@ -14,6 +14,9 @@ import (
 var ms = []any{
 	&models.Character{},
 	&models.Inventory{},
+	&models.Armor{},
+	&models.Weapon{},
+	&models.Creature{},
 }
 
 func main() {

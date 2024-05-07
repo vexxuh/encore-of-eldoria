@@ -4,80 +4,85 @@ import "gorm.io/gorm"
 
 type Character struct {
 	gorm.Model
-	Inventory      Inventory	`gorm:"foreignKey:IventoryId"`
-	InventoryId	   int
-	Creature	   Creature		`gorm:"foreignKey:CreatureId"`
-	CreatureId	   int
-	Weapon			Weapon		`gorm:"foreignKey:WeaponId"`
-	Armor			Armor		`gorm:"foreignKey:ArmorId"`
-	Username       string
-	User           string
-	C_level        int
-	C_experience   int
-	C_health       int
-	M_health       int
-	B_health       int
-	S_strength     int
-	S_agility      int
-	S_constitution int
-	S_intelligence int
-	S_wisdom       int
-	W_s_melee	   int
-	W_e_melee	   int
-	W_s_sword      int
-	W_e_sword      int
-	W_s_axe        int
-	W_e_axe        int
-	W_s_spear      int
-	W_e_spear      int
-	P_state        string
-	C_area         string
-	C_e_weapon     int
-	C_e_armor      int
+	Inventory Inventory `gorm:"foreignKey:CharacterId"`
+
+	Creature Creature `gorm:"foreignKey:CharacterId"`
+
+	Weapon Weapon `gorm:"foreignKey:CharacterId"`
+
+	Armor Armor `gorm:"foreignKey:CharacterId"`
+
+	Username      string
+	User          string
+	CLevel        int
+	CExperience   int
+	CHealth       int
+	MHealth       int
+	BHealth       int
+	SStrength     int
+	SAgility      int
+	SConstitution int
+	SIntelligence int
+	SWisdom       int
+	WSMelee       int
+	WEMelee       int
+	WSSword       int
+	WESword       int
+	WSAxe         int
+	WEAxe         int
+	WSSpear       int
+	WESpear       int
+	PState        string
+	CArea         string
+	CEWeapon      int
+	CEArmor       int
 }
 
 type Inventory struct {
 	gorm.Model
-	I_apple      int
-	I_potion     int
-	I_potionPlus int
-	C_gold       int
-	B_gold       int
+	CharacterId uint
+	IApple      int
+	IPotion     int
+	IPotionplus int
+	CGold       int
+	BGold       int
 }
 
 type Creature struct {
 	gorm.Model
-	C_name       string
-	C_id     	 int
-	C_level      int
-	C_experience int
-	C_c_health	 int
-	C_m_health   int
-	C_attack     int
-	C_defense    int
-
+	CharacterId int
+	CName       string
+	CId         int
+	CLevel      int
+	CExperience int
+	CCHealth    int
+	CMHealth    int
+	CAttack     int
+	CDefense    int
 }
 
 type Weapon struct {
 	gorm.Model
-	I_name     		string
-	I_id     		int
-	I_attack   		int
-	I_strength 		int
-	I_defense  		int
-	I_agility		int
-	I_constitution  int
-	I_type     	 	string
+	CharacterId   int
+	IName         string
+	IId           int
+	IAttack       int
+	IStrength     int
+	IDefense      int
+	IAgility      int
+	IConstitution int
+	IType         string
 }
 
 type Armor struct {
 	gorm.Model
-	I_name     		string
-	I_id     		int
-	I_attack   		int
-	I_strength 		int
-	I_defense  		int
-	I_agility		int
-	I_constitution  int
-	I_type     	 	string
+	CharacterId   int
+	IName         string
+	IId           int
+	IAttack       int
+	IStrength     int
+	IDefense      int
+	IAgility      int
+	IConstitution int
+	IType         string
 }
