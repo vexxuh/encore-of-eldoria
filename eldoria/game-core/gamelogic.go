@@ -2,12 +2,13 @@ package gamecore
 
 import (
 	"encoding/json"
-	models "encore.app/eldoria/game-core/data"
+	"errors"
 	"fmt"
+	"math/rand/v2"
 	"strconv"
 	"strings"
-	"errors"
-	"math/rand/v2"
+
+	models "encore.app/eldoria/game-core/data"
 )
 
 //Discord username | uid
@@ -34,7 +35,6 @@ import (
 //gold in inventory
 //gold in bank
 
-
 /*
 func main() {
 	 userStats := models.Character{
@@ -55,9 +55,9 @@ func main() {
 			C_m_health:		0,
 			C_attack:		0,
 			C_defense:		0,
- 
+
 		 },
- 
+
 		Weapon: models.Weapon{
 			I_name:    		"Fists",
 			I_id:     		0,
@@ -165,85 +165,82 @@ func creatureHealthMsg(ch int, mh int) (int, string) {
 	hmsg := ""
 
 	switch {
-		case ch / mh * 100 == 100:
-			hmsg = "untouched"
-		case ch / mh * 100 > 80:
-			hmsg = "slightly wounded"
-		case ch / mh * 100  > 50:
-			hmsg = "fairly injured"
-		case ch / mh * 100  > 30:
-			hmsg = "critically wounded"
-		case ch / mh * 100  > 15:
-			hmsg = "near death"
-		default:
-			hmsg = "on the footsteps of oblivion"
+	case ch/mh*100 == 100:
+		hmsg = "untouched"
+	case ch/mh*100 > 80:
+		hmsg = "slightly wounded"
+	case ch/mh*100 > 50:
+		hmsg = "fairly injured"
+	case ch/mh*100 > 30:
+		hmsg = "critically wounded"
+	case ch/mh*100 > 15:
+		hmsg = "near death"
+	default:
+		hmsg = "on the footsteps of oblivion"
 	}
-	return (ch / mh * 100), hmsg
+	return ch / mh * 100, hmsg
 }
 
 func CreatePlayer(pc *models.Character, username string, name string) (string, string, models.Character, error) {
 	//player creation
 
-if pc != nil {
-	return "", "", models.Character{}, errors.New("character already exists")
-}
-
-
-	userStats := models.Character{
-		Username:       username,
-		User:           name,
-		C_level:        1,
-		C_experience:   0,
-		C_health:       100,
-		M_health:       100,
-		B_health:       0,
-		S_strength:     10,
-		S_agility:      10,
-		S_constitution: 10,
-		S_intelligence: 10,
-		S_wisdom:       10,
-		W_s_melee:		0,
-		W_e_melee:		0,
-		W_s_sword:      0,
-		W_e_sword:      0,
-		W_s_axe:        0,
-		W_e_axe:        0,
-		W_s_spear:      0,
-		W_e_spear:      0,
-		P_state:        "normal",
-		C_area:         "town",
-		C_e_weapon:     0,
-		C_e_armor:      0,
-		Inventory: models.Inventory{
-			I_apple:      1,
-			I_potion:     0,
-			I_potionPlus: 0,
-			C_gold:       0,
-			B_gold:       0,
-		},
-		Weapon: models.Weapon{
-			I_name:    		"Fists",
-			I_id:     		0,
-			I_attack:  		0,
-			I_strength:		0,
-			I_defense: 		0,
-			I_agility:		0,
-			I_constitution: 0,
-			I_type:      	"melee",
-		},
-		Armor: models.Armor{
-			I_name:    		"None",
-			I_id:     		0,
-			I_attack:  		0,
-			I_strength:		0,
-			I_defense: 		0,
-			I_agility:		0,
-			I_constitution: 0,
-			I_type:      	"normal",
-		},
-
+	if pc != nil {
+		return "", "", models.Character{}, errors.New("character already exists")
 	}
 
+	userStats := models.Character{
+		Username:      username,
+		User:          name,
+		CLevel:        1,
+		CExperience:   0,
+		CHealth:       100,
+		MHealth:       100,
+		BHealth:       0,
+		SStrength:     10,
+		SAgility:      10,
+		SConstitution: 10,
+		SIntelligence: 10,
+		SWisdom:       10,
+		WSMelee:       0,
+		WEMelee:       0,
+		WSSword:       0,
+		WESword:       0,
+		WSAxe:         0,
+		WEAxe:         0,
+		WSSpear:       0,
+		WESpear:       0,
+		PState:        "normal",
+		CArea:         "town",
+		CEWeapon:      0,
+		CEArmor:       0,
+		Inventory: models.Inventory{
+			IApple:      1,
+			IPotion:     0,
+			IPotionplus: 0,
+			CGold:       0,
+			BGold:       0,
+		},
+		Weapon: models.Weapon{
+			IName:         "Fists",
+			IId:           0,
+			IAttack:       0,
+			IStrength:     0,
+			IDefense:      0,
+			IAgility:      0,
+			IConstitution: 0,
+			IType:         "melee",
+		},
+		Armor: models.Armor{
+			IName:         "None",
+			IId:           0,
+			IAttack:       0,
+			IStrength:     0,
+			IDefense:      0,
+			IAgility:      0,
+			IConstitution: 0,
+			IType:         "normal",
+		},
+	}
 
 	fmt.Printf("%+v\n", userStats)
 
@@ -276,14 +273,14 @@ func getStatus(pc *models.Character, command string) (string, string, error) {
 		return "check subject not provided", "You though about checking something, but forgot it the moment you begin to act.  You hate it when that happens.", nil
 	}
 
-	strength := strconv.Itoa(pc.S_strength)
-	agility := strconv.Itoa(pc.S_agility)
-	constitution := strconv.Itoa(pc.S_constitution)
-	intelligence := strconv.Itoa(pc.S_intelligence)
-	wisdom := strconv.Itoa(pc.S_wisdom)
-	C_health := strconv.Itoa(pc.C_health)
-	B_health := strconv.Itoa(pc.B_health)
-	M_health := strconv.Itoa(pc.M_health)
+	strength := strconv.Itoa(pc.SStrength)
+	agility := strconv.Itoa(pc.SAgility)
+	constitution := strconv.Itoa(pc.SConstitution)
+	intelligence := strconv.Itoa(pc.SIntelligence)
+	wisdom := strconv.Itoa(pc.SWisdom)
+	C_health := strconv.Itoa(pc.CHealth)
+	B_health := strconv.Itoa(pc.BHealth)
+	M_health := strconv.Itoa(pc.MHealth)
 	message := "Get status: " + pc.Username
 
 	switch noun := args[1]; noun {
@@ -319,7 +316,7 @@ func MoveArea(pc *models.Character, command string) (string, string, error) {
 	// return "bad state", "bad state"
 	// }
 
-	msg, pass := checkState(pc.P_state)
+	msg, pass := checkState(pc.PState)
 
 	if pass == false {
 		fmt.Println("User unable to do this command at this time. reason: " + msg)
@@ -337,19 +334,19 @@ func MoveArea(pc *models.Character, command string) (string, string, error) {
 	switch area {
 	case "Town":
 		fmt.Println("you travel to the town!")
-		pc.C_area = "town"
+		pc.CArea = "town"
 	case "Plains":
 		fmt.Println("you travel to the plains!")
-		pc.C_area = "plains"
+		pc.CArea = "plains"
 	case "Forest":
 		fmt.Println("you travel to the forest!")
-		pc.C_area = "forest"
+		pc.CArea = "forest"
 	case "Cave":
 		fmt.Println("you travel to the cave!")
-		pc.C_area = "cave"
+		pc.CArea = "cave"
 	case "Dungeon":
 		fmt.Println("you travel to the dungeon!")
-		pc.C_area = "dungeon"
+		pc.CArea = "dungeon"
 	default:
 		fmt.Println("Invalid location!")
 		return "", "", errors.New("invalid area")
@@ -373,18 +370,18 @@ func Store(pc *models.Character, command string) (string, string, error) {
 	*/
 
 	i1 := []string{"apple", "potion", "plus_potion"}
-    i2 := []int{5, 50, 100}
-    i3 := []int{2, 25, 50}
+	i2 := []int{5, 50, 100}
+	i3 := []int{2, 25, 50}
 
 	// i1 := []string{"apple", "potion", "plus_potion", "dagger", "sword", "leather_armor", "iron_armor"}	// item name
-    // i2 := []int{5, 50, 100, 20, 40, 20, 40}																// item cost
-    // i3 := []int{2, 25, 50, 0, 0, 0, 0}																	// heal amount
-    // i4 := []string{"item","item","item","weapon","weapon","armor","armor"}								// item type
-    // i5 := []int{0, 0, 0, 1, 2, 1, 2}																	// item index
+	// i2 := []int{5, 50, 100, 20, 40, 20, 40}																// item cost
+	// i3 := []int{2, 25, 50, 0, 0, 0, 0}																	// heal amount
+	// i4 := []string{"item","item","item","weapon","weapon","armor","armor"}								// item type
+	// i5 := []int{0, 0, 0, 1, 2, 1, 2}																	// item index
 
 	items := ""
 
-	msg, pass := checkState(pc.P_state)
+	msg, pass := checkState(pc.PState)
 
 	if pass == false {
 		fmt.Println("User unable to do this command at this time. reason: " + msg)
@@ -396,13 +393,13 @@ func Store(pc *models.Character, command string) (string, string, error) {
 	// if just 'store' command, show items for sale
 	if len(args) == 1 {
 		fmt.Println("list items")
-		
+
 		// Print store items
 		for i := range i1 {
-            fmt.Println(i1[i])
-            fmt.Println(i2[i])
-	        items = items + i1[i] + " for " + strconv.Itoa(i2[i]) + "gp\n"
-           }
+			fmt.Println(i1[i])
+			fmt.Println(i2[i])
+			items = items + i1[i] + " for " + strconv.Itoa(i2[i]) + "gp\n"
+		}
 		return "list of items requested", "'Welcome!' says the shopkeeper.  'Take a look around and let me know what you would like to buy!'" + items, nil
 	}
 
@@ -410,8 +407,7 @@ func Store(pc *models.Character, command string) (string, string, error) {
 	item := args[2]
 	amount := 1
 
-		
-		amount, e1 := strconv.Atoi(args[3])
+	amount, e1 := strconv.Atoi(args[3])
 	if e1 == nil {
 		fmt.Printf("%T \n %v", amount, amount)
 		amount = 1
@@ -421,12 +417,11 @@ func Store(pc *models.Character, command string) (string, string, error) {
 	var itemIndex int = -1
 	for i := range i1 {
 		if item == i1[i] {
-		itemIndex = i
-		break
+			itemIndex = i
+			break
 		}
 	}
 
-	
 	switch verb {
 	case "buy":
 		fmt.Println("Buying")
@@ -435,19 +430,19 @@ func Store(pc *models.Character, command string) (string, string, error) {
 			return "item does not exist", "'I don't think we have any of that.' says the shopkeeper", nil
 		}
 
-		if amount * i2[itemIndex] > pc.Inventory.C_gold {
+		if amount*i2[itemIndex] > pc.Inventory.CGold {
 			return "not enough gold", "The shopkeeper says 'Sorry guy, it looks like you don't have enough gold for that.'", nil
 		}
 
-		pc.Inventory.C_gold = pc.Inventory.C_gold - amount * i2[itemIndex]
+		pc.Inventory.CGold = pc.Inventory.CGold - amount*i2[itemIndex]
 
 		switch itemIndex {
 		case 1:
-			pc.Inventory.I_apple = pc.Inventory.I_apple + amount
+			pc.Inventory.IApple = pc.Inventory.IApple + amount
 		case 2:
-			pc.Inventory.I_potion = pc.Inventory.I_potion + amount
+			pc.Inventory.IPotion = pc.Inventory.IPotion + amount
 		case 3:
-			pc.Inventory.I_potionPlus = pc.Inventory.I_potionPlus + amount
+			pc.Inventory.IPotionplus = pc.Inventory.IPotionplus + amount
 		}
 
 	case "sell":
@@ -459,39 +454,38 @@ func Store(pc *models.Character, command string) (string, string, error) {
 
 		switch itemIndex {
 		case 1:
-			if pc.Inventory.I_apple < amount {
+			if pc.Inventory.IApple < amount {
 				return "not enough items", "The shopkeeper says 'Sorry guy, you don't have that many to sell.", nil
 			}
-			if pc.Inventory.I_apple >= amount {
-				pc.Inventory.I_apple = pc.Inventory.I_apple - amount
-				pc.Inventory.C_gold = pc.Inventory.C_gold + amount * i3[itemIndex]
+			if pc.Inventory.IApple >= amount {
+				pc.Inventory.IApple = pc.Inventory.IApple - amount
+				pc.Inventory.CGold = pc.Inventory.CGold + amount*i3[itemIndex]
 
-				return "sold items for " + strconv.Itoa(amount * i3[itemIndex]), "The shopkeeper says 'Thanks!", nil
+				return "sold items for " + strconv.Itoa(amount*i3[itemIndex]), "The shopkeeper says 'Thanks!", nil
 			}
 
 		case 2:
-			if pc.Inventory.I_potion < amount {
+			if pc.Inventory.IPotion < amount {
 				return "not enough items", "The shopkeeper says 'Sorry guy, you don't have that many to sell.", nil
 			}
-			if pc.Inventory.I_potion >= amount {
-				pc.Inventory.I_potion = pc.Inventory.I_potion - amount
-				pc.Inventory.C_gold = pc.Inventory.C_gold + amount * i3[itemIndex]
+			if pc.Inventory.IPotion >= amount {
+				pc.Inventory.IPotion = pc.Inventory.IPotion - amount
+				pc.Inventory.CGold = pc.Inventory.CGold + amount*i3[itemIndex]
 
-				return "sold items for " + strconv.Itoa(amount * i3[itemIndex]), "The shopkeeper says 'Thanks!", nil
+				return "sold items for " + strconv.Itoa(amount*i3[itemIndex]), "The shopkeeper says 'Thanks!", nil
 			}
 
 		case 3:
-			if pc.Inventory.I_potionPlus < amount {
+			if pc.Inventory.IPotionplus < amount {
 				return "not enough items", "The shopkeeper says 'Sorry guy, you don't have that many to sell.", nil
 			}
-			if pc.Inventory.I_potionPlus >= amount {
-				pc.Inventory.I_potionPlus = pc.Inventory.I_potionPlus - amount
-				pc.Inventory.C_gold = pc.Inventory.C_gold + amount * i3[itemIndex]
+			if pc.Inventory.IPotionplus >= amount {
+				pc.Inventory.IPotionplus = pc.Inventory.IPotionplus - amount
+				pc.Inventory.CGold = pc.Inventory.CGold + amount*i3[itemIndex]
 
-				return "sold items for " + strconv.Itoa(amount * i3[itemIndex]), "The shopkeeper says 'Thanks!", nil
+				return "sold items for " + strconv.Itoa(amount*i3[itemIndex]), "The shopkeeper says 'Thanks!", nil
 			}
 		}
-
 
 	case "info":
 		fmt.Println("Information")
@@ -508,16 +502,16 @@ func Store(pc *models.Character, command string) (string, string, error) {
 		fmt.Println("The shopkeeper looks at you confused")
 	}
 
-	return "leaving store unexpectedly" , "You have somehow left the shop by mysterious means.  Maybe you blew out the window?", nil
+	return "leaving store unexpectedly", "You have somehow left the shop by mysterious means.  Maybe you blew out the window?", nil
 }
 
-func CheatMode(pc *models.Character, command string) (string, string, error) {
+func CheatMode(pc *models.Character) (string, string, error) {
 	fmt.Println("Cheat items added")
 
-	pc.Inventory.C_gold = pc.Inventory.C_gold + 500
-	pc.Inventory.I_apple = pc.Inventory.I_apple + 10
-	pc.Inventory.I_potion = pc.Inventory.I_potion + 10
-	pc.Inventory.I_potionPlus = pc.Inventory.I_potionPlus + 10
+	pc.Inventory.CGold = pc.Inventory.CGold + 500
+	pc.Inventory.IApple = pc.Inventory.IApple + 10
+	pc.Inventory.IPotion = pc.Inventory.IPotion + 10
+	pc.Inventory.IPotionplus = pc.Inventory.IPotionplus + 10
 
 	message := "Cheat items added to inventory"
 	prompt := "Your backpack suddenly becomes heavier, as if several new things just appeared in it."
@@ -535,10 +529,10 @@ func Inventory(pc *models.Character, command string) (string, string, error) {
 	fmt.Printf("Fields are: %q", args)
 
 	i1 := []string{"apple", "potion", "plus_potion"}
-    i2 := []int{pc.Inventory.I_apple, pc.Inventory.I_potion, pc.Inventory.I_potionPlus}
-    i3 := []int{10, 50, 100}
+	i2 := []int{pc.Inventory.IApple, pc.Inventory.IPotion, pc.Inventory.IPotionplus}
+	i3 := []int{10, 50, 100}
 
-    var itemIndex int = -1
+	var itemIndex int = -1
 	for i := range i1 {
 		if item == i1[i] {
 			itemIndex = i
@@ -559,17 +553,16 @@ func Inventory(pc *models.Character, command string) (string, string, error) {
 
 		switch {
 		case i2[itemIndex] > 0:
-			if pc.C_health + i3[itemIndex] > pc.M_health {
-				pc.C_health = pc.M_health
+			if pc.CHealth+i3[itemIndex] > pc.MHealth {
+				pc.CHealth = pc.MHealth
 				return "Healed to max", "You consume the " + i1[itemIndex] + " and heal to max health.", nil
 			} else {
-				pc.C_health = pc.C_health + i3[itemIndex]
+				pc.CHealth = pc.CHealth + i3[itemIndex]
 				return "Healed up " + strconv.Itoa(i3[itemIndex]), "You consume the " + i1[itemIndex] + " and heal " + strconv.Itoa(i3[itemIndex]) + " health points.", nil
 			}
 		default:
 			return "not enough item" + message, "You don't have one of those to use." + prompt, nil
 		}
-
 
 	}
 	return "leaving inventory unexpectedly", "You have somehow left the inventory screen by mysterious means.", nil
@@ -581,105 +574,105 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 	prompt := ""
 	allowed := true
 
-	switch pc.C_area {
+	switch pc.CArea {
 	case "town":
 		allowed = false
 	default:
 		allowed = true
 	}
 
-	c1 := []string{"turkey","kobold",	"wolf",	"bandit",	"goblin",	"slime",	"bear",	"spider",	"creeping mass",	"skeleton",	"imp",	"wyrm"}
-	c2 := []int{	1, 		2,			3,		4,			5,			6,			7,		8,			9,					10,			11,		12}
-	c3 := []int{	1, 		3,			5,		8,			12,			15,			20,		25,			30,					35,			40,		50}
-	c4 := []int{	1, 		3,			5,		8,			12,			15,			20,		25,			30,					35,			40,		50}
-	c5 := []int{	15,		25,			35,		35,			40,			45,			70,		40,			80,					70,			80,		100}
-	c6 := []int{	15,		25,			35,		35,			40,			45,			70,		40,			80,					70,			80,		100}
-	c7 := []int{	2, 		4,			6,		10,			7,			5,			20,		10,			18,					12,			15,		30}
-	c8 := []int{	2, 		3,			5,		7,			7,			5,			15,		12,			20,					7,			18,		25}
+	c1 := []string{"turkey", "kobold", "wolf", "bandit", "goblin", "slime", "bear", "spider", "creeping mass", "skeleton", "imp", "wyrm"}
+	c2 := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+	c3 := []int{1, 3, 5, 8, 12, 15, 20, 25, 30, 35, 40, 50}
+	c4 := []int{1, 3, 5, 8, 12, 15, 20, 25, 30, 35, 40, 50}
+	c5 := []int{15, 25, 35, 35, 40, 45, 70, 40, 80, 70, 80, 100}
+	c6 := []int{15, 25, 35, 35, 40, 45, 70, 40, 80, 70, 80, 100}
+	c7 := []int{2, 4, 6, 10, 7, 5, 20, 10, 18, 12, 15, 30}
+	c8 := []int{2, 3, 5, 7, 7, 5, 15, 12, 20, 7, 18, 25}
 	//c9 := []string{"plains", "plains", "plains", "forest", "forest",	"forest",	"cave",	"cave",		"cave",				"dungeon",	"dungeon","dungeon"}
 
-/*
-	C_name       string
-	C_id     	 int
-	C_level      int
-	C_experience int
-	C_c_health	 int
-	C_m_health   int
-	C_attack     int
-	C_defense    int
-	c9 
-		plains
-		forest
-		cave
-		dungeon
-*/
+	/*
+		C_name       string
+		C_id     	 int
+		C_level      int
+		C_experience int
+		C_c_health	 int
+		C_m_health   int
+		C_attack     int
+		C_defense    int
+		c9
+			plains
+			forest
+			cave
+			dungeon
+	*/
 
 	if len(args) == 1 {
 		// if in combat, show status
 		//if not in combat, trigger event for the area (combat, special event like a shop...)
-			if pc.P_state == "normal" && allowed {
-				fmt.Println("Combat: no arguments")
-				return "not in combat.", "you are located in " + pc.C_area + ". Use the command 'combat search' to search for a monster", nil
-			}
-			
-			if pc.P_state == "combat" {
-				fmt.Println("Combat: no arguments. Combat engaged.")
+		if pc.PState == "normal" && allowed {
+			fmt.Println("Combat: no arguments")
+			return "not in combat.", "you are located in " + pc.CArea + ". Use the command 'combat search' to search for a monster", nil
+		}
 
-				_, hmsg := creatureHealthMsg(pc.Creature.C_c_health, pc.Creature.C_c_health)
+		if pc.PState == "combat" {
+			fmt.Println("Combat: no arguments. Combat engaged.")
 
-				return "You are in combat", "You are in combat.  You are being attacked by a " + pc.Creature.C_name + "(id:" + strconv.Itoa(pc.Creature.C_id) + "). It is " + hmsg + ". use the command 'combat attack monsterID' to attack that monster.", nil
-			}
+			_, hmsg := creatureHealthMsg(pc.Creature.CCHealth, pc.Creature.CCHealth)
 
-			if pc.P_state == "dead" {
-				fmt.Println("Combat: action failed, player is dead.")
-				return "combat failed, player is dead", "Try as you might, not a dead person yet has managed the will to ressurect themselves. You must create a new character to continue.", nil
-			}		
+			return "You are in combat", "You are in combat.  You are being attacked by a " + pc.Creature.CName + "(id:" + strconv.Itoa(pc.Creature.CId) + "). It is " + hmsg + ". use the command 'combat attack monsterID' to attack that monster.", nil
+		}
+
+		if pc.PState == "dead" {
+			fmt.Println("Combat: action failed, player is dead.")
+			return "combat failed, player is dead", "Try as you might, not a dead person yet has managed the will to ressurect themselves. You must create a new character to continue.", nil
+		}
 	}
 
 	if len(args) == 2 {
 		//combat search
 		//combat attack **future**  auto attack the weakest/last targeted enemy?
-			if pc.P_state == "normal" && allowed && args[1] == "search" {
-				fmt.Println("Combat: searching")
-				c := rand.IntN(3)
-				fmt.Println("random number: " + strconv.Itoa(c))
-				
-				multi := 1
-				switch pc.C_area {
-					case "plains":
-						multi = 1
-					case "forest":
-						multi = 2
-					case "cave":
-						multi = 3
-					case "dungeon":
-						multi = 4
-					default:
-						multi = 1
-					}
+		if pc.PState == "normal" && allowed && args[1] == "search" {
+			fmt.Println("Combat: searching")
+			c := rand.IntN(3)
+			fmt.Println("random number: " + strconv.Itoa(c))
 
-				pc.Creature.C_name = c1[c * multi]
-				pc.Creature.C_id = c2[c * multi]
-				pc.Creature.C_level = c3[c * multi]
-				pc.Creature.C_experience = c4[c * multi]
-				pc.Creature.C_c_health = c5[c * multi]
-				pc.Creature.C_m_health = c6[c * multi]
-				pc.Creature.C_attack = c7[c * multi]
-				pc.Creature.C_defense = c8[c * multi]
-				pc.P_state = "combat"
-				fmt.Println("you found a " + pc.Creature.C_name)
+			multi := 1
+			switch pc.CArea {
+			case "plains":
+				multi = 1
+			case "forest":
+				multi = 2
+			case "cave":
+				multi = 3
+			case "dungeon":
+				multi = 4
+			default:
+				multi = 1
+			}
 
-				return "encounted enemy", "you come across a " + pc.Creature.C_name +". Get ready to fight!", nil
-				}
+			pc.Creature.CName = c1[c*multi]
+			pc.Creature.CId = c2[c*multi]
+			pc.Creature.CLevel = c3[c*multi]
+			pc.Creature.CExperience = c4[c*multi]
+			pc.Creature.CCHealth = c5[c*multi]
+			pc.Creature.CMHealth = c6[c*multi]
+			pc.Creature.CAttack = c7[c*multi]
+			pc.Creature.CDefense = c8[c*multi]
+			pc.PState = "combat"
+			fmt.Println("you found a " + pc.Creature.CName)
+
+			return "encounted enemy", "you come across a " + pc.Creature.CName + ". Get ready to fight!", nil
+		}
 	}
 
-	if pc.P_state == "combat" && args[1] == "search" {
+	if pc.PState == "combat" && args[1] == "search" {
 		fmt.Println("Combat: search attempted. Already in combat.")
-		return "search failed, already in combat", "You are already in an event. use the command 'combat attack monsterID' or 'combat status'", nil		
+		return "search failed, already in combat", "You are already in an event. use the command 'combat attack monsterID' or 'combat status'", nil
 	}
 
 	if len(args) == 3 && args[1] == "attack" {
-		weapon := pc.Weapon.I_name
+		weapon := pc.Weapon.IName
 
 		fmt.Println("Combat: attacking with " + weapon)
 
@@ -688,7 +681,7 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 		pAttackRoll := rand.IntN(20) + 1
 		pResult := "you missed"
 		pReward := 0.0
-		
+
 		cSuccess := false
 		cCrit := false
 		cAttackRoll := rand.IntN(20) + 1
@@ -696,22 +689,21 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 
 		combatComplete := false
 
-		pAttackMod := float64(pc.C_level) - (float64(pc.Creature.C_level) * 0.03) * 100
+		pAttackMod := float64(pc.CLevel) - (float64(pc.Creature.CLevel)*0.03)*100
 		// (difference in levels * 3%) + (difference in pc agility to creature speed * 3%) + ()
 
-		cAttackMod := float64(pc.Creature.C_level) - (float64(pc.C_level) * 0.03 ) * 100
+		cAttackMod := float64(pc.Creature.CLevel) - (float64(pc.CLevel)*0.03)*100
 		// (difference in levels * 3%) + (difference in pc agility to creature speed * 3%) + ()
 
-
-		pDamage := (rand.Float64() * 100) * float64(pc.S_strength) - float64(pc.Creature.C_defense)
-		// strength + weapon damage * 1-100% - creature defense 
+		pDamage := (rand.Float64()*100)*float64(pc.SStrength) - float64(pc.Creature.CDefense)
+		// strength + weapon damage * 1-100% - creature defense
 
 		if pAttackMod < 0 {
 			pAttackMod = 0
 		}
 
-		cDamage := (rand.Float64() * 100) * float64(pc.Creature.C_attack) - float64(pc.S_constitution) * (rand.Float64())
-		// strength + weapon damage * 1-100% - creature defense 
+		cDamage := (rand.Float64()*100)*float64(pc.Creature.CAttack) - float64(pc.SConstitution)*(rand.Float64())
+		// strength + weapon damage * 1-100% - creature defense
 
 		if pAttackMod < 0 {
 			pAttackMod = 0
@@ -719,61 +711,61 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 
 		if ((float64(pAttackRoll) / 20 * 100) + pAttackMod) > 50 {
 			pSuccess = true
-		} 
+		}
 
 		if pAttackRoll == 20 {
 			pSuccess = true
 			pCrit = true
-			pDamage = float64(pc.S_strength) * 1.2
+			pDamage = float64(pc.SStrength) * 1.2
 		}
-			fmt.Println("Player critical hit: " + strconv.FormatBool(pCrit))
+		fmt.Println("Player critical hit: " + strconv.FormatBool(pCrit))
 
 		if ((float64(cAttackRoll) / 20 * 100) + cAttackMod) > 50 {
 			cSuccess = true
-		} 
+		}
 
 		if cAttackRoll == 20 {
 			cSuccess = true
 			cCrit = true
-			cDamage = float64(pc.Creature.C_attack) * 1.2
+			cDamage = float64(pc.Creature.CAttack) * 1.2
 		}
-			fmt.Println("Creature critical hit: " + strconv.FormatBool(cCrit))
+		fmt.Println("Creature critical hit: " + strconv.FormatBool(cCrit))
 
 		if pSuccess {
-			pc.Creature.C_c_health = pc.Creature.C_c_health - int(pDamage)
+			pc.Creature.CCHealth = pc.Creature.CCHealth - int(pDamage)
 			pResult = "you hit for " + strconv.Itoa(int(pDamage))
 		}
 
-		if pc.Creature.C_c_health < 1 {
+		if pc.Creature.CCHealth < 1 {
 			combatComplete = true
-			pReward = float64(pc.Creature.C_level) * (rand.Float64() * .2 )
-			pExp := pc.Creature.C_level + int( float64(pc.Creature.C_level) * 2.2 )
+			pReward = float64(pc.Creature.CLevel) * (rand.Float64() * .2)
+			pExp := pc.Creature.CLevel + int(float64(pc.Creature.CLevel)*2.2)
 			pResult = pResult + "\nYou slayed the creature! You collected enough resources to earn " + strconv.Itoa(int(pReward)) + " gold. You collected " + strconv.Itoa(pExp) + " XP."
 			cResult = ""
-			pc.Inventory.C_gold = pc.Inventory.C_gold + int(pReward)
-			pc.C_experience = pc.C_experience + pExp
+			pc.Inventory.CGold = pc.Inventory.CGold + int(pReward)
+			pc.CExperience = pc.CExperience + pExp
 		}
 
 		if combatComplete == false && cSuccess == true {
-			pc.C_health = pc.C_health - int(cDamage)
+			pc.CHealth = pc.CHealth - int(cDamage)
 			cResult = "the creature hits for " + strconv.Itoa(int(cDamage))
 		}
 
-		if pc.C_health < 1 {
-			pc.P_state = "dead"
+		if pc.CHealth < 1 {
+			pc.PState = "dead"
 			cResult = cResult + "\nyou were slain."
 		}
 
-		if pc.C_experience > pc.C_experience * pc.C_level {
-			pc.C_level = pc.C_level + 1
-			pc.M_health = 100 + (20 * pc.C_level)
-			pc.C_health = pc.M_health
-			pc.S_strength = pc.S_strength + ( 10 * pc.C_level )   
-			pc.S_agility = pc.S_agility + ( 10 * pc.C_level )
-			pc.S_constitution = pc.S_constitution + ( 10 * pc.C_level )
-			pc.S_intelligence = pc.S_intelligence + ( 10 * pc.C_level )
-			pc.S_wisdom =  pc.S_wisdom + ( 10 * pc.C_level )
-			pResult = pResult + "\nYou gained enough experince to level up! You are now level " + strconv.Itoa(pc.C_level)
+		if pc.CExperience > pc.CExperience*pc.CLevel {
+			pc.CLevel = pc.CLevel + 1
+			pc.MHealth = 100 + (20 * pc.CLevel)
+			pc.CHealth = pc.MHealth
+			pc.SStrength = pc.SStrength + (10 * pc.CLevel)
+			pc.SAgility = pc.SAgility + (10 * pc.CLevel)
+			pc.SConstitution = pc.SConstitution + (10 * pc.CLevel)
+			pc.SIntelligence = pc.SIntelligence + (10 * pc.CLevel)
+			pc.SWisdom = pc.SWisdom + (10 * pc.CLevel)
+			pResult = pResult + "\nYou gained enough experince to level up! You are now level " + strconv.Itoa(pc.CLevel)
 		}
 
 		return pResult + "\n" + cResult, pResult + "\n" + cResult, nil
@@ -782,4 +774,3 @@ func Combat(pc *models.Character, command string) (string, string, error) {
 	fmt.Println("Combat: EOF")
 	return "Combat EOF", prompt, nil
 }
-
