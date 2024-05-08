@@ -135,6 +135,44 @@ func main() {
 
 */
 
+func shopInventory(int) (){
+	i1 := [][]string{
+		{"1",		"2",		"3"},				// type index
+		{"apple",	"potion",	"plus_potion"},		// item name
+		{"item",	"item",		"item"},			// item type
+		{"2",		"25",		"50"},				// cost
+		{"5",		"50",		"100"},				// heal amount
+		{"0",		"0",		"0"},				// Attack mod
+		{"0",		"0",		"0"},				// Strength mod
+		{"0",		"0",		"0"},				// Defense mod
+		{"0",		"0",		"0"},				// Agility mod
+		{"0",		"0",		"0"},				// Constitution mod
+	}
+
+
+
+
+//type Weapon struct {
+//	gorm.Model
+//	CharacterId   int
+//	IName         string
+//	IId           int
+//	IAttack       int
+//	IStrength     int
+//	IDefense      int
+//	IAgility      int
+//	IConstitution int
+//	IType         string
+//}
+
+
+
+	i2 := []int{5, 50, 100}
+	i3 := []int{2, 25, 50}
+
+}
+
+
 func printCharacter(pc *models.Character) {
 	str, _ := json.MarshalIndent(pc, "", "\t")
 	fmt.Println(string(str))
