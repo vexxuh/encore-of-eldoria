@@ -135,21 +135,58 @@ func main() {
 
 */
 
-func shopInventory(int) (){
-	i1 := [][]string{
-		{"1",		"2",		"3"},				// type index
-		{"apple",	"potion",	"plus_potion"},		// item name
-		{"item",	"item",		"item"},			// item type
-		{"2",		"25",		"50"},				// cost
-		{"5",		"50",		"100"},				// heal amount
-		{"0",		"0",		"0"},				// Attack mod
-		{"0",		"0",		"0"},				// Strength mod
-		{"0",		"0",		"0"},				// Defense mod
-		{"0",		"0",		"0"},				// Agility mod
-		{"0",		"0",		"0"},				// Constitution mod
+type itemsPool struct {
+	index			int
+	name			string
+	category		string
+	cost			int
+	heal			int
+	attack			int
+	strength		int
+	defense			int
+	agility			int
+	constitution	int
+}
+
+func itemList() []itemsPool {
+	i := []itemsPool{ 
+		{index: 1, name: "apple", category: "item", cost: 2, heal: 5,attack: 0,strength: 0, defense: 0,agility: 0, constitution: 0},
+		{index: 2, name: "potion", category: "item", cost: 25, heal: 50,attack: 0,strength: 0, defense: 0,agility: 0, constitution: 0},
+		{index: 3, name: "plus_potion", category: "item", cost: 50, heal: 100,attack: 0,strength: 0, defense: 0,agility: 0, constitution: 0},
+		{index: 1, name: "leather", category: "armor", cost: 25, heal: 0,attack: 0,strength: 0, defense: 1,agility: 1, constitution: 0},
+		{index: 2, name: "padded_leather", category: "armor", cost: 50, heal: 0,attack: 0,strength: 0, defense: 3,agility: 5, constitution: 0},
+		{index: 3, name: "copper_mail", category: "armor", cost: 150, heal: 0,attack: 0,strength: 0, defense: 5,agility: -1, constitution: 0},
+		{index: 4, name: "iron_mail", category: "armor", cost: 175, heal: 0,attack: 0,strength: 0, defense: 7,agility: -1, constitution: 0},
+		{index: 5, name: "iron_plate", category: "armor", cost: 200, heal: 0,attack: 0,strength: 0, defense: 10agility: ,-4, constitution: 0},
+		{index: 6, name: "steel_plate", category: "armor", cost: 250, heal: 0,attack: 0,strength: 0, defense: 14agility: ,-4, constitution: 0},
+		{index: 1, name: "copper_spear", category: "weapon", cost: 25, heal: 0,attack: 3,strength: 0, defense: 0,agility: 2, constitution: 0},
+		{index: 2, name: "copper_sword", category: "weapon", cost: 25, heal: 0,attack: 5,strength: 0, defense: 0,agility: 0, constitution: 0},
+		{index: 3, name: "copper_axe", category: "weapon", cost: 25, heal: 0,attack: 7,strength: 1, defense: 0,agility: -1, constitution: 0},
+		{index: 4, name: "bronze_spear", category: "weapon", cost: 50, heal: 0,attack: 5,strength: 0, defense: 0,agility: 2, constitution: 0},
+		{index: 5, name: "bronze_sword", category: "weapon", cost: 50, heal: 0,attack: 7,strength: 0, defense: 0,agility: 0, constitution: 0},
+		{index: 6, name: "bronze_axe", category: "weapon", cost: 50, heal: 0,attack: 9,strength: 1, defense: 0,agility: -1, constitution: 0},
+		{index: 7, name: "iron_spear", category: "weapon", cost: 75, heal: 0,attack: 7,strength: 0, defense: 0,agility: 2, constitution: 0},
+		{index: 8, name: "iron_sword", category: "weapon", cost: 75, heal: 0,attack: 9,strength: 0, defense: 0,agility: 0, constitution: 0},
+		{index: 9, name: "iron_axe", category: "weapon", cost: 75, heal: 0,attack: 11,strength: 1, defense: 0,agility: -1, constitution: 0},
+		{index: 10, name: "steel_spear", category: "weapon", cost: 100, heal: 0,attack: 9,strength: 0, defense: 0,agility: 2, constitution: 0},
+		{index: 11, name: "steel_sword", category: "weapon", cost: 100, heal: 0,attack: 11,strength: 0, defense: 0,agility: 0, constitution: 0},
+		{index: 12, name: "steel_axe", category: "weapon", cost: 100, heal: 0,attack: 13,strength: 1, defense: 0,agility: -1, constitution: 0}
 	}
+	return i
+}
 
+func itemTypeFilter(category string) []itemsPool {
+	i := itemList()
 
+	var l []itemsPool
+
+	for _, item := range i {
+		if item.category == category {
+			l = append(l, item)
+		}
+	}
+return l
+}
 
 
 //type Weapon struct {
